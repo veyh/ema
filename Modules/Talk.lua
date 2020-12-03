@@ -11,10 +11,10 @@
 -- ================================================================================ --
 
 -- Create the addon using AceAddon-3.0 and embed some libraries.
-local EMA = LibStub( "AceAddon-3.0" ):NewAddon( 
-	"Talk", 
-	"Module-1.0", 
-	"AceConsole-3.0", 
+local EMA = LibStub( "AceAddon-3.0" ):NewAddon(
+	"Talk",
+	"Module-1.0",
+	"AceConsole-3.0",
 	"AceEvent-3.0",
 	"AceHook-3.0"
 )
@@ -30,7 +30,7 @@ EMA.chatCommand = "ema-talk"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 EMA.parentDisplayName = L["TOON"]
 EMA.moduleDisplayName = L["TALK"]
--- Icon 
+-- Icon
 EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\ChatIcon.tga"
 -- order
 EMA.moduleOrder = 40
@@ -61,14 +61,14 @@ function EMA:GetConfiguration()
 		childGroups  = "tab",
 		get = "EMAConfigurationGetSetting",
 		set = "EMAConfigurationSetSetting",
-		args = {	
+		args = {
 			config = {
 				type = "input",
 				name = L["OPEN_CONFIG"],
 				desc = L["OPEN_CONFIG_HELP"],
 				usage = "/ema-talk config",
 				get = false,
-				set = "",				
+				set = "",
 			},
 			push = {
 				type = "input",
@@ -108,10 +108,10 @@ function EMA:UpdateChatFrameList()
 	table.sort( EMA.chatFrameList )
 end
 
-function EMA:BeforeEMAProfileChanged()	
+function EMA:BeforeEMAProfileChanged()
 end
 
-function EMA:OnEMAProfileChanged()	
+function EMA:OnEMAProfileChanged()
 	EMA:SettingsRefresh()
 end
 
@@ -139,7 +139,7 @@ function EMA:SettingsRefresh()
 end
 
 -- Settings received.
-function EMA:EMAOnSettingsReceived( characterName, settings )	
+function EMA:EMAOnSettingsReceived( characterName, settings )
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
 		EMA.db.forwardWhispers = settings.forwardWhispers
@@ -181,115 +181,115 @@ local function SettingsCreateOptions( top )
 	local movingTop = top
 	-- A blank to get layout to show right?
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, "", movingTop, false )
-	movingTop = movingTop - headingHeight	
+	movingTop = movingTop - headingHeight
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["TALK_OPTIONS"], movingTop, false )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.checkBoxForwardWhispers = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.checkBoxForwardWhispers = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["FORWARD_WHISPERS_MASTER_RELAY"],
 		EMA.SettingsToggleForwardWhispers,
 		L["FORWARD_WHISPERS_MASTER_RELAY_HELP"]
-	)	
-	movingTop = movingTop - checkBoxHeight	
-	EMA.settingsControl.checkBoxDoNotForwardRealIdWhispers = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	)
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControl.checkBoxDoNotForwardRealIdWhispers = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["DO_NOT_BATTENET_WHISPERS"],
 		EMA.SettingsToggleDoNotForwardRealIdWhispers,
 		L["DO_NOT_BATTENET_WHISPERS_HELP"]
-	)	
+	)
 --[[
-	movingTop = movingTop - checkBoxHeight	
-	EMA.settingsControl.checkBoxForwardViaWhisper = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControl.checkBoxForwardViaWhisper = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["FORWARD_USING_NORMAL_WHISPERS"],
 		EMA.SettingsToggleForwardViaWhisper,
 		L["FORWARD_USING_NORMAL_WHISPERS_HRLP"]
 	)
-]]	
+]]
 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxFakeWhispers = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.checkBoxFakeWhispers = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["FORWARD_FAKE_WHISPERS"],
 		EMA.SettingsToggleFakeWhispers,
 		L["FORWARD_FAKE_WHISPERS_HELP"]
-	)	
+	)
 	movingTop = movingTop - checkBoxHeight
-		EMA.settingsControl.dropdownMessageArea = EMAHelperSettings:CreateDropdown( 
+		EMA.settingsControl.dropdownMessageArea = EMAHelperSettings:CreateDropdown(
 		EMA.settingsControl,
-		(headingWidth - indent) / 2, 
-		left + indent, 
-		movingTop, 
-		L["FAKE_WHISPERS_CHANNEL"] 
+		(headingWidth - indent) / 2,
+		left + indent,
+		movingTop,
+		L["FAKE_WHISPERS_CHANNEL"]
 	)
 	EMA.settingsControl.dropdownMessageArea:SetList( EMA.chatFrameList )
 	EMA.settingsControl.dropdownMessageArea:SetCallback( "OnValueChanged", EMA.SettingsSetMessageArea )
 	EMA.settingsControl.buttonRefreshChatList = EMAHelperSettings:CreateButton(
-		EMA.settingsControl, 
-		buttonControlWidth, 
-		left + indent + (headingWidth - indent) / 2 + horizontalSpacing, 
+		EMA.settingsControl,
+		buttonControlWidth,
+		left + indent + (headingWidth - indent) / 2 + horizontalSpacing,
 		movingTop - buttonHeight + 4,
 		L["UPDATE"],
 		EMA.SettingsRefreshChatListClick
 	)
 	movingTop = movingTop - dropdownHeight - verticalSpacing
-	EMA.settingsControl.checkBoxFakeInjectSenderToReplyQueue = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth - indent, 
-		left + indent, 
-		movingTop, 
+	EMA.settingsControl.checkBoxFakeInjectSenderToReplyQueue = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth - indent,
+		left + indent,
+		movingTop,
 		L["FORWARDER_REPLY_QUEUE"],
 		EMA.SettingsToggleFakeInjectSenderToReplyQueue,
 		L["FORWARDER_REPLY_QUEUE_HELP"]
-	)	
+	)
 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxFakeInjectOriginatorToReplyQueue = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth - indent, 
-		left + indent, 
-		movingTop, 
+	EMA.settingsControl.checkBoxFakeInjectOriginatorToReplyQueue = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth - indent,
+		left + indent,
+		movingTop,
 		L["ORIGINATOR_REPLY_QUEUE"],
 		EMA.SettingsToggleFakeInjectOriginatorToReplyQueue,
 		L["ORIGINATOR_REPLY_QUEUE_HELP"]
-		)	
+		)
 --[[
-		movingTop = movingTop - checkBoxHeight	
-	EMA.settingsControl.checkBoxFakeWhisperCompact = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth - indent, 
-		left + indent, 
-		movingTop, 
+		movingTop = movingTop - checkBoxHeight
+	EMA.settingsControl.checkBoxFakeWhisperCompact = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth - indent,
+		left + indent,
+		movingTop,
 		L["MESSAGES_WITH_LINKS"],
 		EMA.SettingsToggleFakeWhisperCompact,
 		L["MESSAGES_WITH_LINKS_HELP"]
-	)	
-]]	
+	)
+]]
 --[[
-	movingTop = movingTop - checkBoxHeight	
-	
+	movingTop = movingTop - checkBoxHeight
+
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["CHAT_SNIPPETS"], movingTop, false )
-	movingTop = movingTop - headingHeight	
-	EMA.settingsControl.checkBoxEnableChatSnippets = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	movingTop = movingTop - headingHeight
+	EMA.settingsControl.checkBoxEnableChatSnippets = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["ENABLE_CHAT_SNIPPETS"],
 		EMA.SettingsToggleChatSnippets,
 		L["ENABLE_CHAT_SNIPPETS_HELP"]
-	)	
-	movingTop = movingTop - checkBoxHeight		
+	)
+	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.highlightRow = 1
 	EMA.settingsControl.offset = 1
 	local list = {}
@@ -307,30 +307,30 @@ local function SettingsCreateOptions( top )
 	list.columnInformation[1].alignment = "LEFT"
 	list.columnInformation[2] = {}
 	list.columnInformation[2].width = 75
-	list.columnInformation[2].alignment = "LEFT"	
+	list.columnInformation[2].alignment = "LEFT"
 	list.scrollRefreshCallback = EMA.SettingsScrollRefresh
 	list.rowClickCallback = EMA.SettingsRowClick
 	EMA.settingsControl.list = list
 	EMAHelperSettings:CreateScrollList( EMA.settingsControl.list )
 	movingTop = movingTop - list.listHeight - verticalSpacing
-	EMA.settingsControl.buttonAdd = EMAHelperSettings:CreateButton(	
-		EMA.settingsControl, 
-		buttonControlWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.buttonAdd = EMAHelperSettings:CreateButton(
+		EMA.settingsControl,
+		buttonControlWidth,
+		left,
+		movingTop,
 		L["ADD"],
 		EMA.SettingsAddClick
 	)
 	EMA.settingsControl.buttonRemove = EMAHelperSettings:CreateButton(
-		EMA.settingsControl, 
-		buttonControlWidth, 
-		left + buttonControlWidth + horizontalSpacing, 
+		EMA.settingsControl,
+		buttonControlWidth,
+		left + buttonControlWidth + horizontalSpacing,
 		movingTop,
 		L["REMOVE"],
 		EMA.SettingsRemoveClick
 	)
 	movingTop = movingTop -	buttonHeight - verticalSpacing
-	EMA.settingsControl.multiEditBoxSnippet = EMAHelperSettings:CreateMultiEditBox( 
+	EMA.settingsControl.multiEditBoxSnippet = EMAHelperSettings:CreateMultiEditBox(
 		EMA.settingsControl,
 		headingWidth,
 		left,
@@ -340,24 +340,24 @@ local function SettingsCreateOptions( top )
 	)
 	EMA.settingsControl.multiEditBoxSnippet:SetCallback( "OnEnterPressed", EMA.SettingsMultiEditBoxChangedSnippet )
 	local multiEditBoxHeightSnippet = 110
-	
-	movingTop = movingTop - multiEditBoxHeightSnippet								
-]]	
+
+	movingTop = movingTop - multiEditBoxHeightSnippet
+]]
 	return movingTop
 end
 
 local function SettingsCreate()
 	EMA.settingsControl = {}
-	EMAHelperSettings:CreateSettings( 
-		EMA.settingsControl, 
-		EMA.moduleDisplayName, 
-		EMA.parentDisplayName, 
+	EMAHelperSettings:CreateSettings(
+		EMA.settingsControl,
+		EMA.moduleDisplayName,
+		EMA.parentDisplayName,
 		EMA.SettingsPushSettingsClick,
 		EMA.moduleIcon,
-		EMA.moduleOrder		
+		EMA.moduleOrder
 	)
 	local bottomOfSettings = SettingsCreateOptions( EMAHelperSettings:TopOfSettings() )
-	EMA.settingsControl.widgetSettings.content:SetHeight( -bottomOfSettings )	
+	EMA.settingsControl.widgetSettings.content:SetHeight( -bottomOfSettings )
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -367,9 +367,9 @@ end
 --[[
 function EMA:SettingsScrollRefresh()
 	FauxScrollFrame_Update(
-		EMA.settingsControl.list.listScrollFrame, 
+		EMA.settingsControl.list.listScrollFrame,
 		EMA:GetItemsMaxPosition(),
-		EMA.settingsControl.list.rowsToDisplay, 
+		EMA.settingsControl.list.rowsToDisplay,
 		EMA.settingsControl.list.rowHeight
 	)
 	EMA.settingsControl.offset = FauxScrollFrame_GetOffset( EMA.settingsControl.list.listScrollFrame )
@@ -378,7 +378,7 @@ function EMA:SettingsScrollRefresh()
 		EMA.settingsControl.list.rows[iterateDisplayRows].columns[1].textString:SetText( "" )
 		EMA.settingsControl.list.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
 		EMA.settingsControl.list.rows[iterateDisplayRows].columns[2].textString:SetText( "" )
-		EMA.settingsControl.list.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )				
+		EMA.settingsControl.list.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
 		EMA.settingsControl.list.rows[iterateDisplayRows].highlight:SetColorTexture( 0.0, 0.0, 0.0, 0.0 )
 		-- Get data.
 		local dataRowNumber = iterateDisplayRows + EMA.settingsControl.offset
@@ -395,7 +395,7 @@ function EMA:SettingsScrollRefresh()
 	end
 end
 
-function EMA:SettingsRowClick( rowNumber, columnNumber )		
+function EMA:SettingsRowClick( rowNumber, columnNumber )
 	if EMA.settingsControl.offset + rowNumber <= EMA:GetItemsMaxPosition() then
 		EMA.settingsControl.highlightRow = EMA.settingsControl.offset + rowNumber
 		local itemInformation = EMA:GetItemAtPosition( EMA.settingsControl.highlightRow )
@@ -519,7 +519,7 @@ local function InitializePopupDialogs()
 				EMA:AddItem( self:GetText() )
             end
             self:GetParent():Hide()
-        end,				
+        end,
     }
 	StaticPopupDialogs["EMATALK_CONFIRM_REMOVE_CHAT_SNIPPET"] = {
         text = L["REMOVE_CHAT_SNIPPET"],
@@ -531,7 +531,7 @@ local function InitializePopupDialogs()
         OnAccept = function( self )
 			EMA:RemoveItem()
 		end,
-    } 
+    }
 	]]
 end
 
@@ -552,11 +552,11 @@ function EMA:OnInitialize()
 	-- Initialise the EMAModule part of this module.
 	EMA:EMAModuleInitialize( EMA.settingsControl.widgetSettings.frame )
 	-- Hook the SendChatMessage to translate any chat snippets.
-	--EMA:RawHook( "SendChatMessage", true )	
+	--EMA:RawHook( "SendChatMessage", true )
 	-- Initialise the popup dialogs.
 	InitializePopupDialogs()
 	-- Populate the settings.
-	EMA:SettingsRefresh()	
+	EMA:SettingsRefresh()
 --	EMA:SettingsRowClick( 1, 1 )
 end
 
@@ -582,7 +582,7 @@ function EMA:UPDATE_CHAT_WINDOWS()
 	if EMA.chatFrameList[EMA.db.whisperMessageArea] == nil then
 		EMA.db.whisperMessageArea = "ChatFrame1"
 	end
-	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.whisperMessageArea )	
+	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.whisperMessageArea )
 end
 
 function EMA:GetItemsMaxPosition()
@@ -598,14 +598,14 @@ function EMA:AddItem( name )
 	itemInformation.name = name
 	itemInformation.snippet = ""
 	table.insert( EMA.db.chatSnippets, itemInformation )
-	EMA:SettingsRefresh()			
+	EMA:SettingsRefresh()
 	EMA:SettingsRowClick( 1, 1 )
 end
 
 function EMA:RemoveItem()
 	table.remove( EMA.db.chatSnippets, EMA.settingsControl.highlightRow )
 	EMA:SettingsRefresh()
-	EMA:SettingsRowClick( 1, 1 )		
+	EMA:SettingsRowClick( 1, 1 )
 end
 
 --[[
@@ -623,13 +623,13 @@ function EMA:SendChatMessage( ... )
 				local messageToSend = EMA:GetTextForSnippet( snippetName )
 				EMA:Print("test")
 				--EMAPrivate.Communications.SendChatMessage( messageToSend, "WHISPER", target, EMAPrivate.Communications )
-				
+
 				-- Finish with the chat message, i.e. do not let the original handler run.
 				return true
 			end
 		end
 	end
-	
+
 	-- Call the orginal function.
 	return EMA.hooks["SendChatMessage"]( ... )
 end
@@ -648,7 +648,7 @@ function EMA:CHAT_MSG_WHISPER( chatType, message, sender, language, channelName,
 		if EMAApi.IsCharacterTheMaster( sender ) == true then
 			-- Yes, relay the masters message to others.
 			EMA:ForwardWhisperFromMaster( message )
-		else		
+		else
 			-- Not the master, forward the whisper to the master.
 			EMA:ForwardWhisperToMaster( message, sender, isGM, false, nil )
 		end
@@ -684,7 +684,7 @@ local function ColourCodeLinks( message )
 		else
 			-- Not an item link.
 			-- GetFixedLink is in Blizzard's FrameXML/ItemRef.lua
-			-- It fixes, quest, achievement, talent, trade, enchant and instancelock links.						
+			-- It fixes, quest, achievement, talent, trade, enchant and instancelock links.
 			realLink = GetFixedLink( link )
 		end
 		realMessage = realMessage:replace( link, realLink )
@@ -694,7 +694,7 @@ end
 
 local function DoesMessageHaveLink( message )
 	local startFind, endFind = message:find( "|H", 1, true )
-	return startFind ~= nil 
+	return startFind ~= nil
 end
 
 local function BuildWhisperCharacterString( originalSender, viaCharacter )
@@ -713,11 +713,15 @@ function EMA:ForwardWhisperToMaster( message, sender, isGM, isReal, realFriendID
 		return
 	end
 	-- Build from whisper string, this cannot be a link as player links are not sent by whispers.
-	local fromCharacterWhisper = sender	
-	if isReal == true then
+	local fromCharacterWhisper = sender
+
+	if isReal then
 		-- Get the toon name of the character the RealID person is playing, Blizzard will not reveal player real names, so cannot send those.
-		fromCharacterWhisper = select( 5, BNGetFriendInfoByID( realFriendID ) )..L["BATTLE_NET"]
-		--local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText = BNGetFriendInfoByID( realFriendID )
+		local bnetInfo = realFriendID and C_BattleNet.GetAccountInfoByID(realFriendID)
+		local battleTag = bnetInfo and bnetInfo.battleTag
+		local gameAccountInfo = bnetInfo and bnetInfo.gameAccountInfo
+		local characterName = gameAccountInfo and gameAccountInfo.characterName
+		fromCharacterWhisper = (characterName or battleTag or "???") .. L["BATTLE_NET"]
 	end
 	if isGM == true then
 		fromCharacterWhisper = fromCharacterWhisper..L["<GM>"]
@@ -725,7 +729,7 @@ function EMA:ForwardWhisperToMaster( message, sender, isGM, isReal, realFriendID
 	-- Whisper the master.
 	if EMA.db.fakeWhisper == true then
 		local completeMessage = L["WHISPERS"]..message
-	--[[	
+	--[[
 		-- Send in compact format?
 		if EMA.db.fakeWhisperCompact == true then
 			-- Does the message contain a link?
@@ -736,7 +740,7 @@ function EMA:ForwardWhisperToMaster( message, sender, isGM, isReal, realFriendID
 				completeMessage = L[" "]..colorString..L["WHISPERED_YOU"].."|r"
 			end
 		end
-	]]	
+	]]
 		if isGM == true then
 			completeMessage = L[" "]..L["<GM>"]..L[" "]..completeMessage
 		end
@@ -780,7 +784,7 @@ function EMA:ForwardWhisperFromMaster( messageFromMaster )
 	end
 	-- Check to see if there is a snippet name in the message (text with a leading !).
 	local messageToSend = messageToInspect
---[[	
+--[[
 	if EMA.db.enableChatSnippets == true then
 		local snippetName = select( 3, messageToInspect:find( "^!(%w+)$" ) )
 		-- If a snippet name was found...
@@ -789,7 +793,7 @@ function EMA:ForwardWhisperFromMaster( messageFromMaster )
 			messageToSend = EMA:GetTextForSnippet( snippetName )
 		end
 	end
-]]	
+]]
 	-- If there is a valid character to send to...
 	if sendTo then
 		if messageToSend:trim() ~= "" then
@@ -797,7 +801,7 @@ function EMA:ForwardWhisperFromMaster( messageFromMaster )
 			if EMA.lastSenderIsReal == true and EMA.lastSenderRealID ~= nil then
 				BNSendWhisper( EMA.lastSenderRealID, messageToSend )
 			else
-				--EMA:Print("chatSend", messageToSend, sendTo ) 
+				--EMA:Print("chatSend", messageToSend, sendTo )
 				SendChatMessage( messageToSend, "WHISPER", nil, sendTo )
 			end
 		end
@@ -820,7 +824,7 @@ end
 function EMA:ProcessReceivedMessage( sender, whisperMessageArea, orginator, forwarder, message, inject1, inject2 )
 	local chatTimestamp = ""
 	local info = ChatTypeInfo["WHISPER"]
-	local colorString = format( "|cff%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255 )	
+	local colorString = format( "|cff%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255 )
 	if (CHAT_TIMESTAMP_FORMAT) then
 		chatTimestamp = colorString..BetterDate( CHAT_TIMESTAMP_FORMAT, time() ).."|r"
 	end
@@ -838,12 +842,12 @@ function EMA:ProcessReceivedMessage( sender, whisperMessageArea, orginator, forw
 	end
 	if inject2 ~= nil then
 		ChatEdit_SetLastTellTarget( inject2, "WHISPER" )
-	end	
+	end
 end
 
 -- A EMA command has been recieved.
 function EMA:EMAOnCommandReceived( characterName, commandName, ... )
-	if commandName == EMA.COMMAND_MESSAGE then		
+	if commandName == EMA.COMMAND_MESSAGE then
 		EMA:ProcessReceivedMessage( characterName, ... )
 	end
 end
