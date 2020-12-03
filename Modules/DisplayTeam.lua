@@ -11,10 +11,10 @@
 -- ================================================================================ --
 
 -- Create the addon using AceAddon-3.0 and embed some libraries.
-local EMA = LibStub( "AceAddon-3.0" ):NewAddon( 
+local EMA = LibStub( "AceAddon-3.0" ):NewAddon(
 	"DisplayTeam",
-	"Module-1.0", 
-	"AceConsole-3.0", 
+	"Module-1.0",
+	"AceConsole-3.0",
 	"AceEvent-3.0",
 	"AceHook-3.0",
 	"AceTimer-3.0"
@@ -37,7 +37,7 @@ EMA.chatCommand = "ema-display-team"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 EMA.parentDisplayName = L["DISPLAY"]
 EMA.moduleDisplayName = L["DISPLAY"]
--- Icon 
+-- Icon
 EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\TeamCore.tga"
 -- order
 EMA.moduleOrder = 50
@@ -83,14 +83,14 @@ EMA.settings = {
 		experienceStatusWidth = 100,
 		experienceStatusHeight = 15,
 		experienceStatusShowValues = false,
-		experienceStatusShowPercentage = true,		
+		experienceStatusShowPercentage = true,
 		showHealthStatus = false,
 		showClassColors = false,
 		showHealthName = false,
 		healthStatusWidth = 100,
 		healthStatusHeight = 25,
 		healthStatusShowValues = true,
-		healthStatusShowPercentage = true,		
+		healthStatusShowPercentage = true,
 		showPowerStatus = false,
 		powerStatusWidth = 100,
 		powerStatusHeight = 15,
@@ -100,8 +100,8 @@ EMA.settings = {
 		comboStatusWidth = 100,
 		comboStatusHeight = 10,
 		comboStatusShowValues = true,
-		comboStatusShowPercentage = true,		
-		showGCDFrame = false, 
+		comboStatusShowPercentage = true,
+		showGCDFrame = false,
 		gCDFrameWidth = 3,
 		gCDFrameHeight = 15,
 		gCDFrameToolTips = true,
@@ -137,14 +137,14 @@ function EMA:GetConfiguration()
 		type = "group",
 		get = "EMAConfigurationGetSetting",
 		set = "EMAConfigurationSetSetting",
-		args = {	
+		args = {
 			config = {
 				type = "input",
 				name = L["OPEN_CONFIG"],
 				desc = L["OPEN_CONFIG_HELP"],
 				usage = "/ema-display config",
 				get = false,
-				set = "",				
+				set = "",
 			},
 			push = {
 				type = "input",
@@ -153,7 +153,7 @@ function EMA:GetConfiguration()
 				usage = "/ema-display-team push",
 				get = false,
 				set = "EMASendSettings",
-			},	
+			},
 			hide = {
 				type = "input",
 				name = L["HIDE_TEAM_DISPLAY"],
@@ -161,7 +161,7 @@ function EMA:GetConfiguration()
 				usage = "/ema-display-team hide",
 				get = false,
 				set = "HideTeamListCommand",
-			},	
+			},
 			show = {
 				type = "input",
 				name = L["SHOW_TEAM_DISPLAY"],
@@ -169,7 +169,7 @@ function EMA:GetConfiguration()
 				usage = "/ema-display-team show",
 				get = false,
 				set = "ShowTeamListCommand",
-			},				
+			},
 		},
 	}
 	return configuration
@@ -186,7 +186,7 @@ EMA.COMMAND_COMBO_STATUS_UPDATE = "CboStsUpd"
 EMA.COMMAND_REQUEST_INFO = "SendInfo"
 EMA.COMMAND_COMBAT_STATUS_UPDATE = "InComStsUpd"
 EMA.COMMAND_POWER_STATUS_UPDATE = "PowStsUpd"
-EMA.COMMAND_HEALTH_STATUS_UPDATE = "heaStsUpd"											  
+EMA.COMMAND_HEALTH_STATUS_UPDATE = "heaStsUpd"
 
 -------------------------------------------------------------------------------------------------------------
 -- Messages module sends.
@@ -204,7 +204,7 @@ EMA.COMMAND_HEALTH_STATUS_UPDATE = "heaStsUpd"
 EMA.globalFramePrefix = "EMADisplayTeam"
 EMA.characterStatusBar = {}
 EMA.totalMembersDisplayed = 0
-EMA.teamListCreated = false	
+EMA.teamListCreated = false
 EMA.refreshHideTeamListControlsPending = false
 EMA.refreshShowTeamListControlsPending = false
 EMA.updateSettingsAfterCombat = false
@@ -220,7 +220,7 @@ local function GetCharacterHeight()
 	local heightExperienceStatus = 0
 	local heightHealthStatus = 0
 	local heightPowerStatus = 0
-	local heightComboStatus = 0		
+	local heightComboStatus = 0
 	local heightGcdFrame = 0
 	local heightAllBars = 0
 	if EMA.db.showCharacterPortrait == true then
@@ -233,7 +233,7 @@ local function GetCharacterHeight()
 	if EMA.db.showExperienceStatus == true then
 		heightExperienceStatus = EMA.db.experienceStatusHeight + EMA.db.barVerticalSpacing
 		heightAllBars = heightAllBars + heightExperienceStatus
-	end	
+	end
 	if EMA.db.showHealthStatus == true then
 		heightHealthStatus = EMA.db.healthStatusHeight + EMA.db.barVerticalSpacing
 		heightAllBars = heightAllBars + heightHealthStatus
@@ -245,14 +245,14 @@ local function GetCharacterHeight()
 	if EMA.db.showComboStatus == true then
 		heightComboStatus = EMA.db.comboStatusHeight + EMA.db.barVerticalSpacing
 		heightAllBars = heightAllBars + heightComboStatus
-	end	
+	end
 	if EMA.db.showGCDFrame == true then
 		heightGcdFrame = EMA.db.gCDFrameHeight + EMA.db.barVerticalSpacing
 		heightAllBars = heightAllBars + heightGcdFrame
-	end	
+	end
 	if EMA.db.barsAreStackedVertically == true then
 		height = max( heightPortrait, heightAllBars )
-	
+
 	else
 		height = max( heightPortrait, heightFollowStatus, heightExperienceStatus, heightHealthStatus, heightPowerStatus, heightComboStatus, heightGcdFrame )
 		--height = max( heightPortrait, heightBagInformation, heightFollowStatus, heightExperienceStatus, heightReputationStatus, heightHealthStatus, heightPowerStatus, heightComboStatus, heightGcdFrame)
@@ -267,7 +267,7 @@ local function GetCharacterWidth()
 	local widthExperienceStatus = 0
 	local widthHealthStatus = 0
 	local widthPowerStatus = 0
-	local widthComboStatus = 0	
+	local widthComboStatus = 0
 	local widthGcdFrame = 0
 	local widthAllBars = 0
 	if EMA.db.showCharacterPortrait == true then
@@ -279,25 +279,25 @@ local function GetCharacterWidth()
 	end
 	if EMA.db.showExperienceStatus == true then
 		widthExperienceStatus = EMA.db.experienceStatusWidth + EMA.db.barHorizontalSpacing
-		widthAllBars = widthAllBars + widthExperienceStatus		
+		widthAllBars = widthAllBars + widthExperienceStatus
 	end
 	if EMA.db.showHealthStatus == true then
 		widthHealthStatus = EMA.db.healthStatusWidth + EMA.db.barHorizontalSpacing
-		widthAllBars = widthAllBars + widthHealthStatus		
-	end	
+		widthAllBars = widthAllBars + widthHealthStatus
+	end
 	if EMA.db.showPowerStatus == true then
 		widthPowerStatus = EMA.db.powerStatusWidth + EMA.db.barHorizontalSpacing
-		widthAllBars = widthAllBars + widthPowerStatus		
+		widthAllBars = widthAllBars + widthPowerStatus
 	end
 	if EMA.db.showComboStatus == true then
 		widthComboStatus = EMA.db.comboStatusWidth + EMA.db.barHorizontalSpacing
-		widthAllBars = widthAllBars + widthComboStatus		
+		widthAllBars = widthAllBars + widthComboStatus
 	end
 	if EMA.db.showGCDFrame == true then
 		widthGcdFrame = ( EMA.db.gCDFrameWidth * EMA.db.gCDFrameHeight + EMA.db.gCDFrameHeight ) + EMA.db.barHorizontalSpacing
 		widthAllBars = widthAllBars +  widthGcdFrame
-	end		
-	
+	end
+
 	if EMA.db.barsAreStackedVertically == true then
 		width = widthPortrait + max( widthFollowStatus, widthExperienceStatus, widthHealthStatus, widthPowerStatus, widthComboStatus,  widthGcdFrame )
 		--width = widthPortrait + max( widthBagInformation, widthFollowStatus, widthExperienceStatus, widthReputationStatus, widthHealthStatus, widthPowerStatus, widthComboStatus,  widthGcdFrame )
@@ -335,32 +335,32 @@ local function CreateEMATeamListFrame()
 	frame:SetToplevel( true )
 	frame:SetClampedToScreen( true )
 	frame:EnableMouse( true )
-	frame:SetMovable( true )	
+	frame:SetMovable( true )
 	frame:RegisterForDrag( "LeftButton" )
-	frame:SetScript( "OnDragStart", 
-		function( this ) 
+	frame:SetScript( "OnDragStart",
+		function( this )
 			if IsAltKeyDown() then
-				if not UnitAffectingCombat("player") then		
+				if not UnitAffectingCombat("player") then
 					-- TODO: SO ARROW ICON ON MOUDE
 					this:StartMoving()
-				end	
+				end
 			end
 		end )
-	frame:SetScript( "OnDragStop", 
-		function( this ) 
-			this:StopMovingOrSizing() 
+	frame:SetScript( "OnDragStop",
+		function( this )
+			this:StopMovingOrSizing()
 			local point, relativeTo, relativePoint, xOffset, yOffset = this:GetPoint()
 			EMA.db.framePoint = point
 			EMA.db.frameRelativePoint = relativePoint
 			EMA.db.frameXOffset = xOffset
 			EMA.db.frameYOffset = yOffset
-		end	)	
+		end	)
 	frame:ClearAllPoints()
 	frame:SetPoint( EMA.db.framePoint, UIParent, EMA.db.frameRelativePoint, EMA.db.frameXOffset, EMA.db.frameYOffset )
 	frame:SetBackdrop( {
-		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", 
-		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", 
-		tile = true, tileSize = 10, edgeSize = 10, 
+		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+		tile = true, tileSize = 10, edgeSize = 10,
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	} )
 	-- Create the title for the team list frame.
@@ -372,11 +372,11 @@ local function CreateEMATeamListFrame()
 	frame.titleName = titleName
 	-- Set transparency of the the frame (and all its children).
 	frame:SetAlpha(EMA.db.frameAlpha)
-	
+
 	-- Set the global frame reference for this frame.
 	EMADisplayTeamListFrame = frame
-	
-	EMA:SettingsUpdateBorderStyle()	
+
+	EMA:SettingsUpdateBorderStyle()
 	EMA.teamListCreated = true
 
 end
@@ -413,7 +413,7 @@ function EMA:SetTeamListVisibility()
 		EMADisplayTeamListFrame:Show()
 	else
 		EMADisplayTeamListFrame:Hide()
-	end	
+	end
 end
 
 function EMA:RefreshTeamListControlsHide()
@@ -421,10 +421,10 @@ function EMA:RefreshTeamListControlsHide()
 		EMA.refreshHideTeamListControlsPending = true
 		return
 	end
-	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do	
-		characterName = EMAUtilities:AddRealmToNameIfMissing ( characterName ) 
+	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do
+		characterName = EMAUtilities:AddRealmToNameIfMissing ( characterName )
 		-- Hide their status bar.
-		EMA:HideEMATeamStatusBar( characterName )		
+		EMA:HideEMATeamStatusBar( characterName )
 	end
 	UpdateEMATeamListDimensions()
 end
@@ -444,18 +444,18 @@ function EMA:RefreshTeamListControlsShow()
 			if EMA.db.olnyShowInParty == true then
 				if UnitClass(Ambiguate( characterName, "none" ) ) then
 				-- Yes, the team member is online, draw their status bars.
-					EMA:UpdateEMATeamStatusBar( characterName, EMA.totalMembersDisplayed )		
+					EMA:UpdateEMATeamStatusBar( characterName, EMA.totalMembersDisplayed )
 					EMA.totalMembersDisplayed = EMA.totalMembersDisplayed + 1
 				end
 			else
-					EMA:UpdateEMATeamStatusBar( characterName, EMA.totalMembersDisplayed )		
-					EMA.totalMembersDisplayed = EMA.totalMembersDisplayed + 1			
+					EMA:UpdateEMATeamStatusBar( characterName, EMA.totalMembersDisplayed )
+					EMA.totalMembersDisplayed = EMA.totalMembersDisplayed + 1
 			end
 		end
 	end
-	UpdateEMATeamListDimensions()	
+	UpdateEMATeamListDimensions()
 end
-	
+
 function EMA:RefreshTeamListControls()
 	EMA:RefreshTeamListControlsHide()
 	EMA:RefreshTeamListControlsShow()
@@ -463,22 +463,22 @@ end
 
 function EMA:SettingsUpdateStatusBarTexture()
 	local statusBarTexture = EMA.SharedMedia:Fetch( "statusbar", EMA.db.statusBarTexture )
-	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do	
+	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do
 		characterStatusBar["followBar"]:SetStatusBarTexture( statusBarTexture )
 		characterStatusBar["followBar"]:GetStatusBarTexture():SetHorizTile( false )
-		characterStatusBar["followBar"]:GetStatusBarTexture():SetVertTile( false )		
+		characterStatusBar["followBar"]:GetStatusBarTexture():SetVertTile( false )
 		characterStatusBar["experienceBar"]:SetStatusBarTexture( statusBarTexture )
 		characterStatusBar["experienceBar"]:GetStatusBarTexture():SetHorizTile( false )
 		characterStatusBar["experienceBar"]:GetStatusBarTexture():SetVertTile( false )
 		characterStatusBar["experienceArtBar"]:SetStatusBarTexture( statusBarTexture )
 		characterStatusBar["experienceArtBar"]:GetStatusBarTexture():SetHorizTile( false )
-		characterStatusBar["experienceArtBar"]:GetStatusBarTexture():SetVertTile( false )		
+		characterStatusBar["experienceArtBar"]:GetStatusBarTexture():SetVertTile( false )
 		characterStatusBar["reputationBar"]:SetStatusBarTexture( statusBarTexture )
 		characterStatusBar["reputationBar"]:GetStatusBarTexture():SetHorizTile( false )
-		characterStatusBar["reputationBar"]:GetStatusBarTexture():SetVertTile( false )		
+		characterStatusBar["reputationBar"]:GetStatusBarTexture():SetVertTile( false )
 		characterStatusBar["healthBar"]:SetStatusBarTexture( statusBarTexture )
 		characterStatusBar["healthBar"]:GetStatusBarTexture():SetHorizTile( false )
-		characterStatusBar["healthBar"]:GetStatusBarTexture():SetVertTile( false )				
+		characterStatusBar["healthBar"]:GetStatusBarTexture():SetVertTile( false )
 		characterStatusBar["powerBar"]:SetStatusBarTexture( statusBarTexture )
 		characterStatusBar["powerBar"]:GetStatusBarTexture():SetHorizTile( false )
 		characterStatusBar["powerBar"]:GetStatusBarTexture():SetVertTile( false )
@@ -491,8 +491,8 @@ end
 function EMA:SettingsUpdateFontStyle()
 	local textFont = EMA.SharedMedia:Fetch( "font", EMA.db.fontStyle )
 	local textSize = EMA.db.fontSize
-	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do	
-		characterStatusBar["followBarText"]:SetFont( textFont , textSize , "OUTLINE")		
+	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do
+		characterStatusBar["followBarText"]:SetFont( textFont , textSize , "OUTLINE")
 		characterStatusBar["experienceBarText"]:SetFont( textFont , textSize , "OUTLINE")
 		characterStatusBar["experienceArtBarText"]:SetFont( textFont , textSize , "OUTLINE")
 		characterStatusBar["reputationBarText"]:SetFont( textFont , textSize , "OUTLINE")
@@ -508,13 +508,13 @@ function EMA:SettingsUpdateBorderStyle()
 	local backgroundStyle = EMA.SharedMedia:Fetch( "background", EMA.db.backgroundStyle )
 	local frame = EMADisplayTeamListFrame
 	frame:SetBackdrop( {
-		bgFile = backgroundStyle, 
-		edgeFile = borderStyle, 
-		tile = true, tileSize = frame:GetWidth(), edgeSize = 10, 
+		bgFile = backgroundStyle,
+		edgeFile = borderStyle,
+		tile = true, tileSize = frame:GetWidth(), edgeSize = 10,
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	} )
 	frame:SetBackdropColor( EMA.db.frameBackgroundColourR, EMA.db.frameBackgroundColourG, EMA.db.frameBackgroundColourB, EMA.db.frameBackgroundColourA )
-	frame:SetBackdropBorderColor( EMA.db.frameBorderColourR, EMA.db.frameBorderColourG, EMA.db.frameBorderColourB, EMA.db.frameBorderColourA )	
+	frame:SetBackdropBorderColor( EMA.db.frameBorderColourR, EMA.db.frameBorderColourG, EMA.db.frameBorderColourB, EMA.db.frameBorderColourA )
 end
 
 function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
@@ -538,7 +538,7 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 	portraitButtonClick:SetAttribute( "unit", Ambiguate( characterName, "all" ) )
 	characterStatusBar["portraitButton"] = portraitButton
 	characterStatusBar["portraitButtonClick"] = portraitButtonClick
-	
+
 	-- Set the follow bar.
 	local followName = EMA.globalFramePrefix.."FollowBar"
 	local followBar = CreateFrame( "StatusBar", followName, parentFrame) --, "TextStatusBar,SecureActionButtonTemplate" )
@@ -553,17 +553,17 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 	followBar:SetFrameStrata( "LOW" )
 	followBar:SetAlpha( 1 )
 	local followBarClick = CreateFrame( "CheckButton", followName.."Click", parentFrame, "SecureActionButtonTemplate" )
-	followBarClick:SetAttribute( "unit", Ambiguate( characterName, "all" ) )																			 
+	followBarClick:SetAttribute( "unit", Ambiguate( characterName, "all" ) )
 	followBarClick:SetFrameStrata( "MEDIUM" )
 	characterStatusBar["followBar"] = followBar
-	characterStatusBar["followBarClick"] = followBarClick	
+	characterStatusBar["followBarClick"] = followBarClick
 	local followBarText = followBar:CreateFontString( followName.."Text", "OVERLAY", "GameFontNormal" )
 	followBarText:SetTextColor( 1.00, 1.00, 1.00, 1.00 )
 	followBarText:SetFont( textFont , textSize, "OUTLINE")
 	followBarText:SetAllPoints()
 	characterStatusBar["followBarText"] = followBarText
 	EMA:SettingsUpdateFollowText( characterName ) --, UnitLevel( Ambiguate( characterName, "none" ) ), nil, nil )
-	
+
 	-- Set the experience bar.
 	local experienceName = EMA.globalFramePrefix.."ExperienceBar"
 	local experienceBar = CreateFrame( "StatusBar", experienceName, parentFrame, "AnimatedStatusBarTemplate" ) --"TextStatusBar,SecureActionButtonTemplate" )
@@ -589,8 +589,8 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 	experienceBarText.exhaustionStateID = 1
 	experienceBarText.playerLevel = 1
 	characterStatusBar["experienceBarText"] = experienceBarText
-	EMA:UpdateExperienceStatus( characterName, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil )	
-	
+	EMA:UpdateExperienceStatus( characterName, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil )
+
 	-- Set the artifactXP bar.
 	local experienceArtName = EMA.globalFramePrefix.."ExperienceArtBar"
 	local experienceArtBar = CreateFrame( "StatusBar", experienceArtName, parentFrame, "AnimatedStatusBarTemplate" ) --"TextStatusBar,SecureActionButtonTemplate" )
@@ -617,8 +617,8 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 	experienceArtBarText.artifactPointsSpent = 1
 	experienceArtBarText.artifactPointsAvailable = 0
 	characterStatusBar["experienceArtBarText"] = experienceArtBarText
-	EMA:UpdateExperienceStatus( characterName, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil )	
-	
+	EMA:UpdateExperienceStatus( characterName, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil )
+
 	-- Set the reputation bar.
 	local reputationName = EMA.globalFramePrefix.."ReputationBar"
 	local reputationBar = CreateFrame( "StatusBar", reputationName, parentFrame, "AnimatedStatusBarTemplate" ) --"TextStatusBar,SecureActionButtonTemplate" )
@@ -646,7 +646,7 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 	reputationBarText.reputationBarValue = 100
 	characterStatusBar["reputationBarText"] = reputationBarText
 	EMA:UpdateReputationStatus( characterName, nil, nil, nil )
-	
+
 	-- Set the health bar.
 	local healthName = EMA.globalFramePrefix.."HealthBar"
 	local healthBar = CreateFrame( "StatusBar", healthName, parentFrame, "TextStatusBar","SecureActionButtonTemplate" )
@@ -670,7 +670,7 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 	healthIncomingBar:SetValue( 0 )
 	healthIncomingBar:SetFrameStrata( "BACKGROUND" )
 	healthIncomingBar:SetAlpha( 1 )
-	
+
 	-- Set the heal Incoming bar
 	local healthBarClick = CreateFrame( "CheckButton", healthName.."Click"..characterName, parentFrame, "SecureActionButtonTemplate" )
 	healthBarClick:SetAttribute( "unit", Ambiguate( characterName, "all" ) )
@@ -687,7 +687,7 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 	healthBarText.inComingHeal = 0
 	characterStatusBar["healthBarText"] = healthBarText
 	EMA:UpdateHealthStatus( characterName, nil, nil )
-	
+
 	-- Set the power bar.
 	local powerName = EMA.globalFramePrefix.."PowerBar"
 	local powerBar = CreateFrame( "StatusBar", powerName, parentFrame, "TextStatusBar","SecureActionButtonTemplate" )
@@ -713,7 +713,7 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 	powerBarText.playerMaxPower = 100
 	characterStatusBar["powerBarText"] = powerBarText
 	EMA:UpdatePowerStatus( characterName, nil, nil, nil )
-	
+
 	-- Set the Combo Points bar.
 	local comboName = EMA.globalFramePrefix.."ComboBar"
 	local comboBar = CreateFrame( "StatusBar", comboName, parentFrame, "TextStatusBar","SecureActionButtonTemplate" )
@@ -740,7 +740,7 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 	comboBarText.playerMaxCombo = 5
 	characterStatusBar["comboBarText"] = comboBarText
 	EMA:UpdateComboStatus( characterName, nil, nil )
-	
+
 	-- Set the GCD Bar.
 	local gCDFrameName = EMA.globalFramePrefix.."GCDFrame"
 	local gCDFrame = CreateFrame( "Frame", gCDFrameName, parentFrame )
@@ -749,17 +749,17 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 	--gCDFrame:SetFrameStrata( "LOW" )
 	--gCDFrame:SetAlpha( 1 )
 	characterStatusBar["GCDFrame"] = gCDFrame
-	
+
 	local gCDFrameText = gCDFrame:CreateFontString( gCDFrameName.."Text", "OVERLAY", "GameFontNormal" )
 	gCDFrameText:SetTextColor( 1.00, 1.00, 0.0, 1.00 )
 	gCDFrameText:SetFont( textFont , textSize, "OUTLINE")
 	gCDFrameText:SetAllPoints()
 	characterStatusBar["GCDFrameText"] = gCDFrameText
-	EMA:SetTrGCOpt()	
+	EMA:SetTrGCOpt()
 
 	-- Add the health and power click bars to ClickCastFrames for addons like Clique to use.
 	--Ebony if Support for Clique if not on then default to target unit
-	--TODO there got to be a better way to doing this for sure but right now i can not be assed to do this for now you need to reload the UI when turning off and on clique support. 
+	--TODO there got to be a better way to doing this for sure but right now i can not be assed to do this for now you need to reload the UI when turning off and on clique support.
 	ClickCastFrames = ClickCastFrames or {}
 	if EMA.db.enableClique == true then
 		ClickCastFrames[portraitButtonClick] = true
@@ -768,7 +768,7 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 		ClickCastFrames[reputationBarClick] = true
 		ClickCastFrames[healthBarClick] = true
 		ClickCastFrames[powerBarClick] = true
-		ClickCastFrames[comboBarClick] = true		
+		ClickCastFrames[comboBarClick] = true
 	else
 		portraitButtonClick:SetAttribute( "type1", "target")
 		followBarClick:SetAttribute( "type1", "target")
@@ -781,7 +781,7 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 end
 
 
-function EMA:HideEMATeamStatusBar( characterName )	
+function EMA:HideEMATeamStatusBar( characterName )
 	local parentFrame = EMADisplayTeamListFrame
 	-- Get (or create and get) the character status bar information.
 	local characterStatusBar = EMA.characterStatusBar[characterName]
@@ -797,9 +797,9 @@ function EMA:HideEMATeamStatusBar( characterName )
 	characterStatusBar["experienceBar"]:Hide()
 	characterStatusBar["experienceBarClick"]:Hide()
 	characterStatusBar["experienceArtBar"]:Hide()
-	characterStatusBar["experienceArtBarClick"]:Hide()	
+	characterStatusBar["experienceArtBarClick"]:Hide()
 	characterStatusBar["reputationBar"]:Hide()
-	characterStatusBar["reputationBarClick"]:Hide()	
+	characterStatusBar["reputationBarClick"]:Hide()
 	characterStatusBar["healthBar"]:Hide()
 	characterStatusBar["healthIncomingBar"]:Hide()
 	characterStatusBar["healthBarClick"]:Hide()
@@ -808,10 +808,10 @@ function EMA:HideEMATeamStatusBar( characterName )
 	characterStatusBar["comboBar"]:Hide()
 	characterStatusBar["comboBarClick"]:Hide()
 	characterStatusBar["GCDFrame"]:Hide()
-end	
+end
 
 
-function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )	
+function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 	local parentFrame = EMADisplayTeamListFrame
 	-- Get (or create and get) the character status bar information.
 	local characterStatusBar = EMA.characterStatusBar[characterName]
@@ -830,18 +830,18 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 		if characterPosition < charactersPerRow then
 			positionLeft = -6 + (characterPosition * characterWidth) + (EMA.db.teamListHorizontalSpacing * 3)
 			parentFrame:SetWidth( (EMA.db.teamListVerticalSpacing * 3) + (GetCharacterWidth() ) + ( positionLeft ) )
-			parentFrame:SetHeight( EMA.db.teamListTitleHeight + (EMA.db.teamListVerticalSpacing * 3) + GetCharacterHeight() ) 
+			parentFrame:SetHeight( EMA.db.teamListTitleHeight + (EMA.db.teamListVerticalSpacing * 3) + GetCharacterHeight() )
 		-- Row 2
 		elseif 	characterPosition < ( charactersPerRow * 2 ) then
 			positionLeft = -6 + (characterPosition - charactersPerRow ) * ( characterWidth ) + (EMA.db.teamListHorizontalSpacing * 3)
 			positionTop = (positionTop - characterHeight)
-			parentFrame:SetHeight( EMA.db.teamListTitleHeight + (EMA.db.teamListVerticalSpacing * 3) + ( GetCharacterHeight() ) * 2 ) 
-		-- Row 3	
+			parentFrame:SetHeight( EMA.db.teamListTitleHeight + (EMA.db.teamListVerticalSpacing * 3) + ( GetCharacterHeight() ) * 2 )
+		-- Row 3
 		elseif 	characterPosition < ( charactersPerRow * 3 ) then
 			positionLeft = -6 + (characterPosition - charactersPerRow * 2 ) * ( characterWidth ) + (EMA.db.teamListHorizontalSpacing * 3)
 			positionTop = (positionTop - characterHeight * 2 )
 			parentFrame:SetHeight( EMA.db.teamListTitleHeight + (EMA.db.teamListVerticalSpacing * 3) + GetCharacterHeight() * 3 )
-			-- Row 4	
+			-- Row 4
 		elseif 	characterPosition < ( charactersPerRow * 4 ) then
 			positionLeft = -6 + (characterPosition - charactersPerRow * 3 ) * ( characterWidth ) + (EMA.db.teamListHorizontalSpacing * 3)
 			positionTop = (positionTop - characterHeight * 3 )
@@ -855,7 +855,7 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 		elseif 	characterPosition < ( charactersPerRow * 6 ) then
 			positionLeft = -6 + (characterPosition - charactersPerRow * 5 ) * ( characterWidth ) + (EMA.db.teamListHorizontalSpacing * 3)
 			positionTop = (positionTop - characterHeight * 5 )
-			parentFrame:SetHeight( EMA.db.teamListTitleHeight + (EMA.db.teamListVerticalSpacing * 3) + GetCharacterHeight() * 6 )				
+			parentFrame:SetHeight( EMA.db.teamListTitleHeight + (EMA.db.teamListVerticalSpacing * 3) + GetCharacterHeight() * 6 )
 		--Row 7
 		elseif 	characterPosition < ( charactersPerRow * 7 ) then
 			positionLeft = -6 + (characterPosition - charactersPerRow * 6 ) * ( characterWidth ) + (EMA.db.teamListHorizontalSpacing * 3)
@@ -865,7 +865,7 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 		elseif 	characterPosition < ( charactersPerRow * 8 ) then
 			positionLeft = -6 + (characterPosition - charactersPerRow * 7 ) * ( characterWidth ) + (EMA.db.teamListHorizontalSpacing * 3)
 			positionTop = (positionTop - characterHeight * 7 )
-			parentFrame:SetHeight( EMA.db.teamListTitleHeight + (EMA.db.teamListVerticalSpacing * 3) + GetCharacterHeight() * 8 )				
+			parentFrame:SetHeight( EMA.db.teamListTitleHeight + (EMA.db.teamListVerticalSpacing * 3) + GetCharacterHeight() * 8 )
 		--Row 9
 		elseif 	characterPosition < ( charactersPerRow * 9 ) then
 			positionLeft = -6 + (characterPosition - charactersPerRow * 8 ) * ( characterWidth ) + (EMA.db.teamListHorizontalSpacing * 3)
@@ -876,9 +876,9 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 			positionLeft = -6 + (characterPosition - charactersPerRow * 9 ) * ( characterWidth ) + (EMA.db.teamListHorizontalSpacing * 3)
 			positionTop = (positionTop - characterHeight * 9 )
 			parentFrame:SetHeight( EMA.db.teamListTitleHeight + (EMA.db.teamListVerticalSpacing * 3) + GetCharacterHeight() * 10 )
-		else		
+		else
 			return
-		end	
+		end
 	--Old code kept for Legacy Purpose
 		--positionLeft = -6 + (characterPosition * characterWidth) + (EMA.db.teamListHorizontalSpacing * 3)
 	else
@@ -905,7 +905,7 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
             portraitButton:ClearModel()
             portraitButton:SetUnit(unit)
         end
-		
+
 		if EMA.db.characterPortraitFreeze == true then
 			portraitButton:FreezeAnimation(60, 0, 55)
 		end
@@ -923,7 +923,7 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 	else
 		portraitButton:Hide()
 		portraitButtonClick:Hide()
-	end	
+	end
 	-- Display the follow bar.
 	local followBar	= characterStatusBar["followBar"]
 	local followBarClick = characterStatusBar["followBarClick"]
@@ -956,7 +956,7 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 	local experienceHonorBar = characterStatusBar["experienceHonorBar"]
 	local experienceHonorBarClick = characterStatusBar["experienceHonorBarClick"]
 	local reputationBar	= characterStatusBar["reputationBar"]
-	local reputationBarClick = characterStatusBar["reputationBarClick"]	
+	local reputationBarClick = characterStatusBar["reputationBarClick"]
 	if EMA.db.showExperienceStatus == true then
 		--EMA:Print("TestLevel", characterName, level, maxLevel, xpDisabled, showXP, showArtifact )
 		local showBarCount = 0
@@ -972,14 +972,14 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 				showArtBeforeBar = experienceBar
 				setArtPoint = "BOTTOMLEFT"
 				setArtLeft = 0
-				setArtTop = -1			
+				setArtTop = -1
 			else
 				showArtBeforeBar = parentFrame
 				setArtPoint = "TOPLEFT"
 				setArtLeft = positionLeft
 				setArtTop = positionTop
-			end	
-		end					
+			end
+		end
 		if EMA.db.showRepStatus == true then
 			--EMA:Print("Show Reputation")
 			showBarCount = showBarCount + 1
@@ -988,24 +988,24 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 				showRepBeforeBar = experienceBar
 				setRepPoint = "BOTTOMLEFT"
 				setRepLeft = 0
-				setRepTop = -1				
+				setRepTop = -1
 			elseif EMA.db.showArtifactStatus == true then --and EMA.db.showHonorStatus == false then
 				--EMA:Print("Show Reputation 2")
 				showRepBeforeBar = experienceArtBar
 				setRepPoint = "BOTTOMLEFT"
 				setRepLeft = 0
-				setRepTop = -1				
+				setRepTop = -1
 			else
 				--EMA:Print("Show Reputation 4")
 				showRepBeforeBar = parentFrame
 				setRepPoint = "TOPLEFT"
 				setRepLeft = positionLeft
 				setRepTop = positionTop
-			end		
+			end
 		end
 		if showBarCount < 1 then
 			showBarCount = showBarCount + 1
-		end	
+		end
 		--EMA:Print("showBarCountTest", showBarCount)
 		--Xp Bar
 			experienceBar.backgroundTexture:SetAllPoints()
@@ -1016,14 +1016,14 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 			experienceBarClick:SetWidth( EMA.db.experienceStatusWidth )
 			experienceBarClick:SetHeight( EMA.db.experienceStatusHeight / showBarCount )
 			experienceBarClick:ClearAllPoints()
-			experienceBarClick:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", positionLeft, positionTop )		
+			experienceBarClick:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", positionLeft, positionTop )
 		if EMA.db.showXpStatus == true then
 			experienceBar:Show()
 			experienceBarClick:Show()
 		else
 			experienceBar:Hide()
 			experienceBarClick:Hide()
-		end	
+		end
 		--Artifact Bar
 			experienceArtBar.backgroundTexture:SetAllPoints()
 			experienceArtBar:SetWidth( EMA.db.experienceStatusWidth )
@@ -1033,14 +1033,14 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 			experienceArtBarClick:ClearAllPoints()
 			experienceArtBarClick:SetPoint( "TOPLEFT", showArtBeforeBar, setArtPoint, setArtLeft , setArtTop )
 			experienceArtBarClick:SetWidth( EMA.db.experienceStatusWidth )
-			experienceArtBarClick:SetHeight( EMA.db.experienceStatusHeight / showBarCount )		
-		if EMA.db.showArtifactStatus == true then	
+			experienceArtBarClick:SetHeight( EMA.db.experienceStatusHeight / showBarCount )
+		if EMA.db.showArtifactStatus == true then
 			experienceArtBar:Show()
 			experienceArtBarClick:Show()
 		else
 			experienceArtBar:Hide()
 			experienceArtBarClick:Hide()
-		end	
+		end
 
 		--rep
 			reputationBar.backgroundTexture:SetAllPoints()
@@ -1057,21 +1057,21 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 			reputationBarClick:Show()
 		else
 			reputationBar:Hide()
-			reputationBarClick:Hide()		
-		end	
-		
+			reputationBarClick:Hide()
+		end
+
 		if EMA.db.barsAreStackedVertically == true then
 			positionTop = positionTop - EMA.db.experienceStatusHeight - EMA.db.barVerticalSpacing
 		else
 			positionLeft = positionLeft + EMA.db.experienceStatusWidth + EMA.db.teamListHorizontalSpacing
 		end
-	
+
 	else
 		experienceBar:Hide()
 		experienceBarClick:Hide()
 		experienceArtBar:Hide()
 		experienceArtBarClick:Hide()
-	end		
+	end
 	-- Display the health bar.
 	local healthBar	= characterStatusBar["healthBar"]
 	local healthIncomingBar = characterStatusBar["healthIncomingBar"]
@@ -1108,7 +1108,7 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 	else
 		healthIncomingBar:Hide()
 		--healthBarClick:Hide()
-	end			
+	end
 	-- Display the power bar.
 	local powerBar = characterStatusBar["powerBar"]
 	local powerBarClick = characterStatusBar["powerBarClick"]
@@ -1156,7 +1156,7 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 	else
 		comboBar:Hide()
 		comboBarClick:Hide()
-	end	
+	end
 
 	-- Display the GCD.
 	local GCDFrame = characterStatusBar["GCDFrame"]
@@ -1174,7 +1174,7 @@ function EMA:UpdateEMATeamStatusBar( characterName, characterPosition )
 		end
 	else
 		GCDFrame:Hide()
-	end	
+	end
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -1201,65 +1201,65 @@ local function SettingsCreateDisplayOptions( top )
 	local movingTop = top
 	-- A blank to get layout to show right?
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L[""], movingTop, false )
-	movingTop = movingTop - headingHeight	
+	movingTop = movingTop - headingHeight
 	-- Create show.
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["DISPLAY_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.displayOptionsCheckBoxShowTeamList = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowTeamList = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["SHOW_TEAM_FRAME"],
 		EMA.SettingsToggleShowTeamList,
 		L["SHOW_TEAM_FRAME_HELP"]
-	)	
+	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsCheckBoxShowTeamListOnlyOnMaster = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowTeamListOnlyOnMaster = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["ONLY_ON_MASTER"],
 		EMA.SettingsToggleShowTeamListOnMasterOnly,
 		L["ONLY_ON_MASTER_HELP"]
-	)	
+	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsCheckBoxHideTeamListInCombat = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxHideTeamListInCombat = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["HIDE_IN_COMBAT"],
 		EMA.SettingsToggleHideTeamListInCombat,
 		L["HIDE_IN_COMBAT_HELP_DT"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsCheckBoxEnableClique = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxEnableClique = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["ENABLE_CLIQUE"],
 		EMA.SettingsToggleEnableClique,
 		L["ENABLE_CLIQUE_HELP"]
-	)	
+	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsCheckBoxOlnyShowInParty = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxOlnyShowInParty = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["SHOW_PARTY"],
 		EMA.SettingsToggleOlnyShowinParty,
 		L["SHOW_PARTY_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsCheckBoxHpManaOutOfParty = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxHpManaOutOfParty = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["HEALTH_POWER_GROUP"],
 		EMA.SettingsToggleHpManaOutOfParty,
 		L["HEALTH_POWER_GROUP_HELP"]
@@ -1268,71 +1268,71 @@ local function SettingsCreateDisplayOptions( top )
 	-- Create appearance & layout.
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["APPEARANCE_LAYOUT_HEALDER"], movingTop, true )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.displayOptionsCheckBoxShowListTitle = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowListTitle = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left,
+		movingTop,
 		L["SHOW_TITLE"],
 		EMA.SettingsToggleShowTeamListTitle,
 		L["SHOW_TITLE_HELP"]
-	)	
+	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsCheckBoxStackVertically = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxStackVertically = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["STACK_VERTICALLY_HELP"],
 		EMA.SettingsToggleStackVertically,
 		L["STACK_VERTICALLY_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsCharactersPerBar = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCharactersPerBar = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
+		movingTop,
 		L["CHARACTERS_PER_BAR"]
 	)
 	EMA.settingsControl.displayOptionsCharactersPerBar:SetSliderValues( 1, 10, 1 )
 	EMA.settingsControl.displayOptionsCharactersPerBar:SetCallback( "OnValueChanged", EMA.SettingsChangeCharactersPerBar )
 
-	
-	EMA.settingsControl.displayOptionsTeamListScaleSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		column2left, 
-		movingTop, 
+
+	EMA.settingsControl.displayOptionsTeamListScaleSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		column2left,
+		movingTop,
 		L["SCALE"]
 	)
 	EMA.settingsControl.displayOptionsTeamListScaleSlider:SetSliderValues( 0.5, 2, 0.01 )
 	EMA.settingsControl.displayOptionsTeamListScaleSlider:SetCallback( "OnValueChanged", EMA.SettingsChangeScale )
 	movingTop = movingTop - sliderHeight - verticalSpacing
 
-	EMA.settingsControl.displayOptionsTeamListTransparencySlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsTeamListTransparencySlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
+		movingTop,
 		L["TRANSPARENCY"]
 	)
 	EMA.settingsControl.displayOptionsTeamListTransparencySlider:SetSliderValues( 0, 1, 0.01 )
 	EMA.settingsControl.displayOptionsTeamListTransparencySlider:SetCallback( "OnValueChanged", EMA.SettingsChangeTransparency )
-	movingTop = movingTop - sliderHeight - verticalSpacing	
-	EMA.settingsControl.displayOptionsTeamListMediaStatus = EMAHelperSettings:CreateMediaStatus( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
+	movingTop = movingTop - sliderHeight - verticalSpacing
+	EMA.settingsControl.displayOptionsTeamListMediaStatus = EMAHelperSettings:CreateMediaStatus(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
 		movingTop,
 		L["BAR_TEXTURES"]
 	)
 	EMA.settingsControl.displayOptionsTeamListMediaStatus:SetCallback( "OnValueChanged", EMA.SettingsChangeStatusBarTexture )
 	movingTop = movingTop - mediaHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsTeamListMediaBorder = EMAHelperSettings:CreateMediaBorder( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
+	EMA.settingsControl.displayOptionsTeamListMediaBorder = EMAHelperSettings:CreateMediaBorder(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
 		movingTop,
 		L["BORDER_STYLE"]
 	)
@@ -1345,12 +1345,12 @@ local function SettingsCreateDisplayOptions( top )
 		L["BORDER COLOUR"]
 	)
 	EMA.settingsControl.displayOptionsBorderColourPicker:SetHasAlpha( true )
-	EMA.settingsControl.displayOptionsBorderColourPicker:SetCallback( "OnValueConfirmed", EMA.SettingsBorderColourPickerChanged )	
+	EMA.settingsControl.displayOptionsBorderColourPicker:SetCallback( "OnValueConfirmed", EMA.SettingsBorderColourPickerChanged )
 	movingTop = movingTop - mediaHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsTeamListMediaBackground = EMAHelperSettings:CreateMediaBackground( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
+	EMA.settingsControl.displayOptionsTeamListMediaBackground = EMAHelperSettings:CreateMediaBackground(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
 		movingTop,
 		L["BACKGROUND"]
 	)
@@ -1366,51 +1366,51 @@ local function SettingsCreateDisplayOptions( top )
 	EMA.settingsControl.displayOptionsBackgroundColourPicker:SetCallback( "OnValueConfirmed", EMA.SettingsBackgroundColourPickerChanged )
 	--Set the font
 	movingTop = movingTop - mediaHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsTeamListMediaFont = EMAHelperSettings:CreateMediaFont( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
+	EMA.settingsControl.displayOptionsTeamListMediaFont = EMAHelperSettings:CreateMediaFont(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
 		movingTop,
 		L["FONT"]
 	)
 	EMA.settingsControl.displayOptionsTeamListMediaFont:SetCallback( "OnValueChanged", EMA.SettingsChangeFontStyle )
-	EMA.settingsControl.displayOptionsSetFontSize = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		column2left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsSetFontSize = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		column2left,
+		movingTop,
 		L["FONT_SIZE"]
 	)
 	EMA.settingsControl.displayOptionsSetFontSize:SetSliderValues( 8, 20 , 1 )
 	EMA.settingsControl.displayOptionsSetFontSize:SetCallback( "OnValueChanged", EMA.SettingsChangeFontSize )
-	movingTop = movingTop - mediaHeight - sectionSpacing	
+	movingTop = movingTop - mediaHeight - sectionSpacing
 	-- Create portrait.
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["PORTRAIT_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.displayOptionsCheckBoxShowPortrait = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowPortrait = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left,
+		movingTop,
 		L["SHOW"],
 		EMA.SettingsToggleShowPortrait,
 		L["SHOW_CHARACTER_PORTRAIT"]
-	)	
-	EMA.settingsControl.displayOptionsCheckBoxCharacterPortraitFreeze = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left2, 
-		movingTop, 
+	)
+	EMA.settingsControl.displayOptionsCheckBoxCharacterPortraitFreeze = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left2,
+		movingTop,
 		L["FREEZE_PORTRAIT"],
 		EMA.SettingsToggleShowPortraitFreeze,
 		L["FREEZE_PORTRAIT_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsPortraitWidthSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsPortraitWidthSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
+		movingTop,
 		L["WIDTH"]
 	)
 	EMA.settingsControl.displayOptionsPortraitWidthSlider:SetSliderValues( 15, 300, 1 )
@@ -1419,39 +1419,39 @@ local function SettingsCreateDisplayOptions( top )
 	-- Create follow status.
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["FOLLOW_BAR_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.displayOptionsCheckBoxShowFollowStatus = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowFollowStatus = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left,
+		movingTop,
 		L["SHOW"],
 		EMA.SettingsToggleShowFollowStatus,
 		L["SHOW_FOLLOW_BAR"]
-	)	
-	EMA.settingsControl.displayOptionsCheckBoxShowFollowStatusName = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left2, 
-		movingTop, 
+	)
+	EMA.settingsControl.displayOptionsCheckBoxShowFollowStatusName = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left2,
+		movingTop,
 		L["NAME"],
 		EMA.SettingsToggleShowFollowStatusName,
 		L["SHOW_NAME"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsFollowStatusWidthSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsFollowStatusWidthSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
+		movingTop,
 		L["WIDTH"]
 	)
 	EMA.settingsControl.displayOptionsFollowStatusWidthSlider:SetSliderValues( 15, 300, 1 )
 	EMA.settingsControl.displayOptionsFollowStatusWidthSlider:SetCallback( "OnValueChanged", EMA.SettingsChangeFollowStatusWidth )
-	EMA.settingsControl.displayOptionsFollowStatusHeightSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		column2left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsFollowStatusHeightSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		column2left,
+		movingTop,
 		L["HEIGHT"]
 	)
 	EMA.settingsControl.displayOptionsFollowStatusHeightSlider:SetSliderValues( 15, 50, 1 )
@@ -1460,205 +1460,205 @@ local function SettingsCreateDisplayOptions( top )
 	-- Create experience status.
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["EXPERIENCE_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.displayOptionsCheckBoxShowExperienceStatus = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowExperienceStatus = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left,
+		movingTop,
 		L["SHOW"],
 		EMA.SettingsToggleShowExperienceStatus,
 		L["SHOW_XP_BAR"]
-	)	
-	EMA.settingsControl.displayOptionsCheckBoxShowExperienceStatusValues = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left2, 
-		movingTop, 
+	)
+	EMA.settingsControl.displayOptionsCheckBoxShowExperienceStatusValues = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left2,
+		movingTop,
 		L["VALUES"],
 		EMA.SettingsToggleShowExperienceStatusValues,
-		L["VALUES_HELP"] 
-	)	
-	EMA.settingsControl.displayOptionsCheckBoxShowExperienceStatusPercentage = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left3, 
-		movingTop, 
+		L["VALUES_HELP"]
+	)
+	EMA.settingsControl.displayOptionsCheckBoxShowExperienceStatusPercentage = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left3,
+		movingTop,
 		L["PERCENTAGE"],
 		EMA.SettingsToggleShowExperienceStatusPercentage,
 		L["PERCENTAGE_HELP"]
-	)		
+	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsCheckBoxShowLevel = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowLevel = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left,
+		movingTop,
 		L["SHOW_LEVEL"],
 		EMA.SettingsToggleShowLevel,
 		L["SHOW_LEVEL_HELP"]
-	)	
-	EMA.settingsControl.displayOptionsCheckBoxShowXpStatus = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left2, 
-		movingTop, 
+	)
+	EMA.settingsControl.displayOptionsCheckBoxShowXpStatus = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left2,
+		movingTop,
 		L["SHOW_XP"],
 		EMA.SettingsToggleShowXpStatus,
 		L["SHOW_XP_HELP"]
-	)	
-	EMA.settingsControl.displayOptionsCheckBoxShowArtifactStatus = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left3, 
-		movingTop, 
+	)
+	EMA.settingsControl.displayOptionsCheckBoxShowArtifactStatus = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left3,
+		movingTop,
 		L["ARTIFACT_BAR"],
 		EMA.SettingsToggleShowArtifactStatus,
 		L["ARTIFACT_BAR_HELP"]
-	)	
-	movingTop = movingTop - checkBoxHeight - verticalSpacing	
-	EMA.settingsControl.displayOptionsCheckBoxShowRepStatus = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop, 
+	)
+	movingTop = movingTop - checkBoxHeight - verticalSpacing
+	EMA.settingsControl.displayOptionsCheckBoxShowRepStatus = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left,
+		movingTop,
 		L["REPUTATION_BAR"],
 		EMA.SettingsToggleShowRepStatus,
 		L["REPUTATION_BAR_HELP"]
-	)	
+	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsExperienceStatusWidthSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsExperienceStatusWidthSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
+		movingTop,
 		L["WIDTH"]
 	)
 	EMA.settingsControl.displayOptionsExperienceStatusWidthSlider:SetSliderValues( 15, 300, 1 )
 	EMA.settingsControl.displayOptionsExperienceStatusWidthSlider:SetCallback( "OnValueChanged", EMA.SettingsChangeExperienceStatusWidth )
-	EMA.settingsControl.displayOptionsExperienceStatusHeightSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		column2left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsExperienceStatusHeightSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		column2left,
+		movingTop,
 		L["HEIGHT"]
 	)
 	EMA.settingsControl.displayOptionsExperienceStatusHeightSlider:SetSliderValues( 15, 60, 1 )
 	EMA.settingsControl.displayOptionsExperienceStatusHeightSlider:SetCallback( "OnValueChanged", EMA.SettingsChangeExperienceStatusHeight )
-	movingTop = movingTop - sliderHeight - sectionSpacing	
+	movingTop = movingTop - sliderHeight - sectionSpacing
 	-- Create health status.
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["HEALTH_BAR_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.displayOptionsCheckBoxShowHealthStatus = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowHealthStatus = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left,
+		movingTop,
 		L["SHOW"],
 		EMA.SettingsToggleShowHealthStatus,
 		L["SHOW_HEALTH"]
-	)			
-	EMA.settingsControl.displayOptionsCheckBoxShowClassColors = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left2, 
-		movingTop, 
+	)
+	EMA.settingsControl.displayOptionsCheckBoxShowClassColors = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left2,
+		movingTop,
 		L["SHOW_CLASS_COLORS"],
 		EMA.SettingsToggleShowClassColors,
-		L["SHOW_CLASS_COLORS_HELP"] 
+		L["SHOW_CLASS_COLORS_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsCheckBoxShowHealthStatusValues = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowHealthStatusValues = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left,
+		movingTop,
 		L["VALUES"],
 		EMA.SettingsToggleShowHealthStatusValues,
 		L["VALUES_HELP"]
 	)
-	EMA.settingsControl.displayOptionsCheckBoxShowHealthStatusPercentage = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left2, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowHealthStatusPercentage = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left2,
+		movingTop,
 		L["PERCENTAGE"],
 		EMA.SettingsToggleShowHealthStatusPercentage,
 		L["PERCENTAGE_HELP"]
 	)
-	EMA.settingsControl.displayOptionsCheckBoxShowHealthName = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left3, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowHealthName = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left3,
+		movingTop,
 		L["SHOW_NAME"],
 		EMA.SettingsToggleShowHealthName,
 		L["SHOW_NAME"]
-	)		
+	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsHealthStatusWidthSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsHealthStatusWidthSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
+		movingTop,
 		L["WIDTH"]
 	)
 	EMA.settingsControl.displayOptionsHealthStatusWidthSlider:SetSliderValues( 15, 300, 1 )
 	EMA.settingsControl.displayOptionsHealthStatusWidthSlider:SetCallback( "OnValueChanged", EMA.SettingsChangeHealthStatusWidth )
-	EMA.settingsControl.displayOptionsHealthStatusHeightSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		column2left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsHealthStatusHeightSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		column2left,
+		movingTop,
 		L["HEIGHT"]
 	)
 	EMA.settingsControl.displayOptionsHealthStatusHeightSlider:SetSliderValues( 15, 60, 1 )
 	EMA.settingsControl.displayOptionsHealthStatusHeightSlider:SetCallback( "OnValueChanged", EMA.SettingsChangeHealthStatusHeight )
-	movingTop = movingTop - sliderHeight - sectionSpacing	
+	movingTop = movingTop - sliderHeight - sectionSpacing
 	-- Create power status.
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["POWER_BAR_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.displayOptionsCheckBoxShowPowerStatus = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowPowerStatus = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left,
+		movingTop,
 		L["SHOW"],
 		EMA.SettingsToggleShowPowerStatus,
 		L["POWER_HELP"]
-	)	
-	EMA.settingsControl.displayOptionsCheckBoxShowPowerStatusValues = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left2, 
-		movingTop, 
+	)
+	EMA.settingsControl.displayOptionsCheckBoxShowPowerStatusValues = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left2,
+		movingTop,
 		L["VALUES"],
 		EMA.SettingsToggleShowPowerStatusValues,
 		L["VALUES_HELP"]
-	)	
-	EMA.settingsControl.displayOptionsCheckBoxShowPowerStatusPercentage = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left3, 
-		movingTop, 
+	)
+	EMA.settingsControl.displayOptionsCheckBoxShowPowerStatusPercentage = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left3,
+		movingTop,
 		L["PERCENTAGE"],
 		EMA.SettingsToggleShowPowerStatusPercentage,
 		L["PERCENTAGE_HELP"]
-	)			
+	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsPowerStatusWidthSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsPowerStatusWidthSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
+		movingTop,
 		L["WIDTH"]
 	)
 	EMA.settingsControl.displayOptionsPowerStatusWidthSlider:SetSliderValues( 15, 300, 1 )
 	EMA.settingsControl.displayOptionsPowerStatusWidthSlider:SetCallback( "OnValueChanged", EMA.SettingsChangePowerStatusWidth )
-	EMA.settingsControl.displayOptionsPowerStatusHeightSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		column2left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsPowerStatusHeightSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		column2left,
+		movingTop,
 		L["HEIGHT"]
 	)
 	EMA.settingsControl.displayOptionsPowerStatusHeightSlider:SetSliderValues( 10, 60, 1 )
@@ -1667,48 +1667,48 @@ local function SettingsCreateDisplayOptions( top )
 	-- Create Combo Point status.
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["CLASS_BAR_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.displayOptionsCheckBoxShowComboStatus = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowComboStatus = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left,
+		movingTop,
 		L["SHOW"],
 		EMA.SettingsToggleShowComboStatus,
-		L["CLASS_POWER"] 
-	)	
-	EMA.settingsControl.displayOptionsCheckBoxShowComboStatusValues = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left2, 
-		movingTop, 
+		L["CLASS_POWER"]
+	)
+	EMA.settingsControl.displayOptionsCheckBoxShowComboStatusValues = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left2,
+		movingTop,
 		L["VALUES"],
 		EMA.SettingsToggleShowComboStatusValues,
 		L["VALUES_HELP"]
-	)	
-	EMA.settingsControl.displayOptionsCheckBoxShowComboStatusPercentage = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left3, 
-		movingTop, 
+	)
+	EMA.settingsControl.displayOptionsCheckBoxShowComboStatusPercentage = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left3,
+		movingTop,
 		L["PERCENTAGE"],
 		EMA.SettingsToggleShowComboStatusPercentage,
-		L["PERCENTAGE_HELP"] 
-	)			
+		L["PERCENTAGE_HELP"]
+	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsComboStatusWidthSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsComboStatusWidthSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
+		movingTop,
 		L["WIDTH"]
-	)	
+	)
 	EMA.settingsControl.displayOptionsComboStatusWidthSlider:SetSliderValues( 15, 300, 1 )
 	EMA.settingsControl.displayOptionsComboStatusWidthSlider:SetCallback( "OnValueChanged", EMA.SettingsChangeComboStatusWidth )
-	EMA.settingsControl.displayOptionsComboStatusHeightSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		column2left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsComboStatusHeightSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		column2left,
+		movingTop,
 		L["HEIGHT"]
 	)
 	EMA.settingsControl.displayOptionsComboStatusHeightSlider:SetSliderValues( 10, 60, 1 )
@@ -1717,46 +1717,46 @@ local function SettingsCreateDisplayOptions( top )
 	-- Create GCD Frame.
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["GCD_FRAME_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.displayOptionsCheckBoxShowGcdFrame = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowGcdFrame = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left,
+		movingTop,
 		L["SHOW"],
 		EMA.SettingsToggleShowGcdFrame,
-		L["GCD_FRAME"] 
-	)	
+		L["GCD_FRAME"]
+	)
 --[[
-	EMA.settingsControl.displayOptionsCheckBoxShowGcdFrameToolTips = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left2, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsCheckBoxShowGcdFrameToolTips = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		thirdWidth,
+		left2,
+		movingTop,
 		L["TOOLTIPS"],
 		EMA.SettingsToggleShowGcdFrameToolTips,
 		L["TOOLTIPS_HELP"]
-	)	
-]]			
+	)
+]]
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsGcdFrameWidthSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsGcdFrameWidthSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
+		movingTop,
 		L["WIDTH"]
-	)	
+	)
 	EMA.settingsControl.displayOptionsGcdFrameWidthSlider:SetSliderValues( 1, 8 , 1 )
 	EMA.settingsControl.displayOptionsGcdFrameWidthSlider:SetCallback( "OnValueChanged", EMA.SettingsChangeGcdFrameWidth )
-	EMA.settingsControl.displayOptionsGcdFrameHeightSlider = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		column2left, 
-		movingTop, 
+	EMA.settingsControl.displayOptionsGcdFrameHeightSlider = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		column2left,
+		movingTop,
 		L["HEIGHT"]
 	)
 	EMA.settingsControl.displayOptionsGcdFrameHeightSlider:SetSliderValues( 15, 60 , 1 )
 	EMA.settingsControl.displayOptionsGcdFrameHeightSlider:SetCallback( "OnValueChanged", EMA.SettingsChangeGcdFrameHeight )
-	
+
 	movingTop = movingTop - sliderHeight - sectionSpacing
 	return movingTop
 end
@@ -1764,30 +1764,30 @@ end
 local function SettingsCreate()
 	EMA.settingsControl = {}
 	-- Create the settings panel.
-	EMAHelperSettings:CreateSettings( 
-		EMA.settingsControl, 
-		EMA.moduleDisplayName, 
-		EMA.parentDisplayName, 
+	EMAHelperSettings:CreateSettings(
+		EMA.settingsControl,
+		EMA.moduleDisplayName,
+		EMA.parentDisplayName,
 		EMA.SettingsPushSettingsClick,
 		EMA.moduleIcon,
-		EMA.moduleOrder		
+		EMA.moduleOrder
 	)
 	local bottomOfDisplayOptions = SettingsCreateDisplayOptions( EMAHelperSettings:TopOfSettings() )
 	EMA.settingsControl.widgetSettings.content:SetHeight( -bottomOfDisplayOptions )
 	-- Help
 	local helpTable = {}
-	EMAHelperSettings:CreateHelp( EMA.settingsControl, helpTable, EMA:GetConfiguration() )		
+	EMAHelperSettings:CreateHelp( EMA.settingsControl, helpTable, EMA:GetConfiguration() )
 end
 
 -------------------------------------------------------------------------------------------------------------
 -- Settings Populate.
 -------------------------------------------------------------------------------------------------------------
 
-function EMA:BeforeEMAProfileChanged()	
+function EMA:BeforeEMAProfileChanged()
 	EMA:RefreshTeamListControlsHide()
 end
 
-function EMA:OnEMAProfileChanged()	
+function EMA:OnEMAProfileChanged()
 	EMA:SettingsRefresh()
 end
 
@@ -1803,11 +1803,11 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.displayOptionsCheckBoxHpManaOutOfParty:SetValue ( EMA.db.healthManaOutOfParty )
 	EMA.settingsControl.displayOptionsTeamListTransparencySlider:SetValue( EMA.db.frameAlpha )
 	EMA.settingsControl.displayOptionsTeamListScaleSlider:SetValue( EMA.db.teamListScale )
-	EMA.settingsControl.displayOptionsTeamListMediaStatus:SetValue( EMA.db.statusBarTexture ) 
+	EMA.settingsControl.displayOptionsTeamListMediaStatus:SetValue( EMA.db.statusBarTexture )
 	EMA.settingsControl.displayOptionsTeamListMediaBorder:SetValue( EMA.db.borderStyle )
 	EMA.settingsControl.displayOptionsTeamListMediaBackground:SetValue( EMA.db.backgroundStyle )
 	EMA.settingsControl.displayOptionsTeamListMediaFont:SetValue( EMA.db.fontStyle )
-	EMA.settingsControl.displayOptionsSetFontSize:SetValue( EMA.db.fontSize )	
+	EMA.settingsControl.displayOptionsSetFontSize:SetValue( EMA.db.fontSize )
 	EMA.settingsControl.displayOptionsCheckBoxShowPortrait:SetValue( EMA.db.showCharacterPortrait )
 	EMA.settingsControl.displayOptionsPortraitWidthSlider:SetValue( EMA.db.characterPortraitWidth )
 	EMA.settingsControl.displayOptionsCheckBoxCharacterPortraitFreeze:SetValue( EMA.db.characterPortraitFreeze )
@@ -1827,10 +1827,10 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.displayOptionsCheckBoxShowHealthStatus:SetValue( EMA.db.showHealthStatus )
 	EMA.settingsControl.displayOptionsCheckBoxShowClassColors:SetValue( EMA.db.showClassColors )
 	EMA.settingsControl.displayOptionsCheckBoxShowHealthStatusValues:SetValue( EMA.db.healthStatusShowValues )
-	EMA.settingsControl.displayOptionsCheckBoxShowHealthStatusPercentage:SetValue( EMA.db.healthStatusShowPercentage )	
+	EMA.settingsControl.displayOptionsCheckBoxShowHealthStatusPercentage:SetValue( EMA.db.healthStatusShowPercentage )
 	EMA.settingsControl.displayOptionsCheckBoxShowHealthName:SetValue( EMA.db.showHealthName )
 	EMA.settingsControl.displayOptionsHealthStatusWidthSlider:SetValue( EMA.db.healthStatusWidth )
-	EMA.settingsControl.displayOptionsHealthStatusHeightSlider:SetValue( EMA.db.healthStatusHeight )	
+	EMA.settingsControl.displayOptionsHealthStatusHeightSlider:SetValue( EMA.db.healthStatusHeight )
 	EMA.settingsControl.displayOptionsCheckBoxShowPowerStatus:SetValue( EMA.db.showPowerStatus )
 	EMA.settingsControl.displayOptionsCheckBoxShowPowerStatusValues:SetValue( EMA.db.powerStatusShowValues )
 	EMA.settingsControl.displayOptionsCheckBoxShowPowerStatusPercentage:SetValue( EMA.db.powerStatusShowPercentage )
@@ -1838,12 +1838,12 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.displayOptionsPowerStatusHeightSlider:SetValue( EMA.db.powerStatusHeight )
 	EMA.settingsControl.displayOptionsCheckBoxShowComboStatus:SetValue( EMA.db.showComboStatus )
 	EMA.settingsControl.displayOptionsCheckBoxShowComboStatusValues:SetValue( EMA.db.comboStatusShowValues )
-	EMA.settingsControl.displayOptionsCheckBoxShowComboStatusPercentage:SetValue( EMA.db.comboStatusShowPercentage )	
+	EMA.settingsControl.displayOptionsCheckBoxShowComboStatusPercentage:SetValue( EMA.db.comboStatusShowPercentage )
 	EMA.settingsControl.displayOptionsComboStatusWidthSlider:SetValue( EMA.db.comboStatusWidth )
-	EMA.settingsControl.displayOptionsComboStatusHeightSlider:SetValue( EMA.db.comboStatusHeight )	
+	EMA.settingsControl.displayOptionsComboStatusHeightSlider:SetValue( EMA.db.comboStatusHeight )
 	EMA.settingsControl.displayOptionsCheckBoxShowGcdFrame:SetValue( EMA.db.showGCDFrame )
 	EMA.settingsControl.displayOptionsGcdFrameWidthSlider:SetValue( EMA.db.gCDFrameWidth )
-	EMA.settingsControl.displayOptionsGcdFrameHeightSlider:SetValue( EMA.db.gCDFrameHeight )	
+	EMA.settingsControl.displayOptionsGcdFrameHeightSlider:SetValue( EMA.db.gCDFrameHeight )
 	EMA.settingsControl.displayOptionsBackgroundColourPicker:SetColor( EMA.db.frameBackgroundColourR, EMA.db.frameBackgroundColourG, EMA.db.frameBackgroundColourB, EMA.db.frameBackgroundColourA )
 	EMA.settingsControl.displayOptionsBorderColourPicker:SetColor( EMA.db.frameBorderColourR, EMA.db.frameBorderColourG, EMA.db.frameBorderColourB, EMA.db.frameBorderColourA )
 	-- State.
@@ -1864,7 +1864,7 @@ function EMA:SettingsRefresh()
 		EMA.settingsControl.displayOptionsTeamListMediaBorder:SetDisabled( not EMA.db.showTeamList )
 		EMA.settingsControl.displayOptionsTeamListMediaBackground:SetDisabled( not EMA.db.showTeamList )
 		EMA.settingsControl.displayOptionsTeamListMediaFont:SetDisabled( not EMA.db.showTeamList )
-		EMA.settingsControl.displayOptionsSetFontSize:SetDisabled( not EMA.db.showTeamList )		
+		EMA.settingsControl.displayOptionsSetFontSize:SetDisabled( not EMA.db.showTeamList )
 		EMA.settingsControl.displayOptionsCheckBoxShowPortrait:SetDisabled( not EMA.db.showTeamList )
 		EMA.settingsControl.displayOptionsPortraitWidthSlider:SetDisabled( not EMA.db.showTeamList or not EMA.db.showCharacterPortrait )
 		EMA.settingsControl.displayOptionsCheckBoxCharacterPortraitFreeze:SetDisabled( not EMA.db.showTeamList or not EMA.db.showCharacterPortrait )
@@ -1908,7 +1908,7 @@ function EMA:SettingsRefresh()
 			EMA:SettingsUpdateBorderStyle()
 			EMA:SettingsUpdateStatusBarTexture()
 			EMA:SettingsUpdateFontStyle()
-			EMA:SetTeamListVisibility()	
+			EMA:SetTeamListVisibility()
 			EMA:SettingsUpdateFollowTextAll()
 			EMA:SettingsUpdateExperienceAll()
 			EMA:SettingsUpdateReputationAll()
@@ -1923,7 +1923,7 @@ function EMA:SettingsRefresh()
 end
 
 -- Settings received.
-function EMA:EMAOnSettingsReceived( characterName, settings )	
+function EMA:EMAOnSettingsReceived( characterName, settings )
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
 		EMA.db.showTeamList = settings.showTeamList
@@ -1967,17 +1967,17 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.showHealthName = settings.showHealthName
 		EMA.db.showPowerStatus = settings.showPowerStatus
 		EMA.db.powerStatusWidth = settings.powerStatusWidth
-		EMA.db.powerStatusHeight = settings.powerStatusHeight		
+		EMA.db.powerStatusHeight = settings.powerStatusHeight
 		EMA.db.powerStatusShowValues = settings.powerStatusShowValues
 		EMA.db.powerStatusShowPercentage = settings.powerStatusShowPercentage
 		EMA.db.showComboStatus = settings.showComboStatus
 		EMA.db.comboStatusWidth = settings.comboStatusWidth
-		EMA.db.comboStatusHeight = settings.comboStatusHeight		
+		EMA.db.comboStatusHeight = settings.comboStatusHeight
 		EMA.db.comboStatusShowValues = settings.comboStatusShowValues
 		EMA.db.comboStatusShowPercentage = settings.comboStatusShowPercentage
 		EMA.db.showGCDFrame = settings.showGCDFrame
 		EMA.db.gCDFrameWidth = settings.gCDFrameWidth
-		EMA.db.gCDFrameHeight = settings.gCDFrameHeight		
+		EMA.db.gCDFrameHeight = settings.gCDFrameHeight
 		EMA.db.gCDFrameToolTips = settings.gCDFrameToolTips
 		EMA.db.frameAlpha = settings.frameAlpha
 		EMA.db.framePoint = settings.framePoint
@@ -1991,7 +1991,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.frameBorderColourR = settings.frameBorderColourR
 		EMA.db.frameBorderColourG = settings.frameBorderColourG
 		EMA.db.frameBorderColourB = settings.frameBorderColourB
-		EMA.db.frameBorderColourA = settings.frameBorderColourA		
+		EMA.db.frameBorderColourA = settings.frameBorderColourA
 		-- Refresh the settings.
 		EMA:SettingsRefresh()
 		-- Tell the player.
@@ -2316,7 +2316,7 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 	end
 	if commandName == EMA.COMMAND_COMBO_STATUS_UPDATE then
 		EMA:ProcessUpdateComboStatusMessage( characterName, ... )
-	end	
+	end
 	if commandName == EMA.COMMAND_COMBAT_STATUS_UPDATE then
 		EMA:ProcessUpdateCombatStatusMessage( characterName, ... )
 	end
@@ -2325,8 +2325,8 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 	end
 	if commandName == EMA.COMMAND_POWER_STATUS_UPDATE then
 		EMA:ProcessUpdatePowerStatusMessage(characterName, ... )
-	end																		  	
-end	
+	end
+end
 
 -------------------------------------------------------------------------------------------------------------
 -- Shared Media Callbacks
@@ -2347,32 +2347,32 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:RangeUpdateCommand()
-	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do			
+	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do
 		--EMA:Print("name", characterName )
 		local name = Ambiguate( characterName, "none" )
 		local range = UnitInRange( name )
 
-	end				
+	end
 end
 
 -------------------------------------------------------------------------------------------------------------
 -- Follow Status Bar Updates.
 -------------------------------------------------------------------------------------------------------------
 
-function EMA:AUTOFOLLOW_BEGIN( event, name, ... )	
+function EMA:AUTOFOLLOW_BEGIN( event, name, ... )
 	if EMA.isFollowing == false then
 		EMA:ScheduleTimer( "SendFollowStatusUpdateCommand", 1 , true)
 		EMA.isFollowing = true
 	end
 end
 
-function EMA:AUTOFOLLOW_END( event, ... )	
-	EMA:ScheduleTimer( "SendFollowStatusUpdateCommand", 1 , false )	
+function EMA:AUTOFOLLOW_END( event, ... )
+	EMA:ScheduleTimer( "SendFollowStatusUpdateCommand", 1 , false )
 end
 
 
 function EMA:SendFollowStatusUpdateCommand( isFollowing )
-	if EMA.db.showTeamList == true and EMA.db.showFollowStatus == true then	
+	if EMA.db.showTeamList == true and EMA.db.showFollowStatus == true then
 		local canSend = false
 		local alpha = AutoFollowStatus:GetAlpha()
 		--EMA:Print("testA", alpha)
@@ -2381,15 +2381,15 @@ function EMA:SendFollowStatusUpdateCommand( isFollowing )
 			EMA.isFollowing = false
 		end
 		if isFollowing == true then
-			canSend = true	
-		end	
+			canSend = true
+		end
 		-- Check to see if EMAFollow is enabled and follow strobing is on.  If this is the case then
 		-- do not send the follow update.
 		if EMAApi.Follow ~= nil then
 			if EMAApi.Follow.IsFollowingStrobing() == true then
 				canSend = false
 			end
-		end	
+		end
 		--EMA:Print("canSend", canSend )
 		if canSend == true then
 			if EMA.db.showTeamListOnMasterOnly == true then
@@ -2455,7 +2455,7 @@ function EMA:SendCombatStatusUpdateCommand()
 end
 
 function EMA:SettingsUpdateFollowTextAll()
-	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do			
+	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do
 		EMA:SettingsUpdateFollowText( characterName, nil )
 	end
 end
@@ -2481,13 +2481,13 @@ function EMA:SettingsUpdateFollowText( characterName, inCombat )
 		return
 	end
 	local followBarText = characterStatusBar["followBarText"]
-	
+
 	if inCombat == true then
 		followBarText:SetTextColor(1.0, 0.5, 0.25)
 	else
 		followBarText:SetTextColor( 1.00, 1.00, 1.00, 1.00 )
 	end
-	
+
 	local text = ""
 	if EMA.db.followStatusShowName == true then
 		text = text..Ambiguate( characterName, "none" )
@@ -2501,21 +2501,21 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:PLAYER_XP_UPDATE( event, ... )
-	EMA:SendExperienceStatusUpdateCommand()	
+	EMA:SendExperienceStatusUpdateCommand()
 end
 
 function EMA:UPDATE_EXHAUSTION( event, ... )
 	--TODO This Event Is Spaming so we have turned it off for now it does it in rested areas
 	--EMA:Print("testSpam")
-	--EMA:SendExperienceStatusUpdateCommand()	
+	--EMA:SendExperienceStatusUpdateCommand()
 end
 
 function EMA:PLAYER_LEVEL_UP( event, ... )
-	EMA:SendExperienceStatusUpdateCommand()	
+	EMA:SendExperienceStatusUpdateCommand()
 end
 
 function EMA:ARTIFACT_XP_UPDATE(event, ...)
-	EMA:SendExperienceStatusUpdateCommand()	
+	EMA:SendExperienceStatusUpdateCommand()
 end
 
 function EMA:SendExperienceStatusUpdateCommand()
@@ -2523,34 +2523,34 @@ function EMA:SendExperienceStatusUpdateCommand()
 		--Player XP
 		local playerExperience = UnitXP( "player" )
 		local playerMaxExperience = UnitXPMax( "player" )
-		local playerMaxLevel = GetMaxPlayerLevel()	
+		local playerMaxLevel = GetMaxPlayerLevel()
 		local playerLevel = UnitLevel("player")
 		local exhaustionStateID, exhaustionStateName, exhaustionStateMultiplier = GetRestState()
-		--Artifact XP	
+		--Artifact XP
 		local artifactName = "n/a"
 		local artifactXP = 0
 		local artifactForNextPoint = 100
 		local artifactPointsAvailable = 0
 		local artifactPointsSpent = 0
-		
 
-	local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem() 
-	if (azeriteItemLocation) and HasArtifactEquipped() == false then 
-		local azeriteXP, azeriteTotalXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
-		local azeriteLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
-		local azeriteItem = Item:CreateFromItemLocation(azeriteItemLocation)
-		local azeriteName = azeriteItem:GetItemName()	
-		--EMA:Print("test", azeriteName, azeriteXP, azeriteTotalXP )
-		artifactName = azeriteName
-		artifactXP = azeriteXP
-		artifactForNextPoint = azeriteTotalXP
-		artifactPointsAvailable = 0
-		artifactPointsSpent	= 0	
-	end	
+		local azeriteItemLocation = self:GetAzeriteItemLocation()
+		if azeriteItemLocation then
+			local azeriteXP, azeriteTotalXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
+			local azeriteLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
+			local azeriteItem = Item:CreateFromItemLocation(azeriteItemLocation)
+			local azeriteName = azeriteItem:GetItemName()
+			--EMA:Print("test", azeriteName, azeriteXP, azeriteTotalXP )
+			artifactName = azeriteName
+			artifactXP = azeriteXP
+			artifactForNextPoint = azeriteTotalXP
+			artifactPointsAvailable = 0
+			artifactPointsSpent	= 0
+		end
+
 		if EMA.db.showTeamListOnMasterOnly == true then
 				--EMA:Print("Testtoteam", characterName, name, xp, xpForNextPoint, numPointsAvailableToSpend)
 				--EMA:Print("TestTOTEAM", characterName, name, xp, xpForNextPoint, numPointsAvailableToSpend)
-				EMA:EMASendCommandToMaster( EMA.COMMAND_EXPERIENCE_STATUS_UPDATE, playerExperience, playerMaxExperience, exhaustionStateID, playerLevel, artifactName, artifactXP, artifactPointsSpent, artifactForNextPoint, artifactPointsAvailable )--, honorXP, honorMax, HonorLevel, prestigeLevel, honorExhaustionStateID )			
+				EMA:EMASendCommandToMaster( EMA.COMMAND_EXPERIENCE_STATUS_UPDATE, playerExperience, playerMaxExperience, exhaustionStateID, playerLevel, artifactName, artifactXP, artifactPointsSpent, artifactForNextPoint, artifactPointsAvailable )--, honorXP, honorMax, HonorLevel, prestigeLevel, honorExhaustionStateID )
 			else
 				--EMA:DebugMessage( "SendExperienceStatusUpdateCommand TO TEAM!" )
 				--EMA:Print("TestTOTEAM", characterName, name, xp, xpForNextPoint, numPointsAvailableToSpend)
@@ -2559,12 +2559,28 @@ function EMA:SendExperienceStatusUpdateCommand()
 	end
 end
 
+function EMA:GetAzeriteItemLocation()
+	local location = C_AzeriteItem.FindActiveAzeriteItem()
+
+	if not location then
+		return
+	end
+
+	if location:IsEquipmentSlot() then
+		return location
+	end
+
+	if BACKPACK_CONTAINER <= location.bagID and location.bagID <= NUM_BAG_SLOTS then
+		return location
+	end
+end
+
 function EMA:ProcessUpdateExperienceStatusMessage( characterName, playerExperience, playerMaxExperience, exhaustionStateID, playerLevel, artifactName, artifactXP, artifactForNextPoint, artifactPointsSpent, artifactPointsAvailable ) --, honorXP, honorMax, HonorLevel, prestigeLevel, honorExhaustionStateID)
 	EMA:UpdateExperienceStatus( characterName, playerExperience, playerMaxExperience, exhaustionStateID, playerLevel, artifactName, artifactXP, artifactForNextPoint, artifactPointsSpent, artifactPointsAvailable ) --, honorXP, honorMax, HonorLevel, prestigeLevel, honorExhaustionStateID )
 end
 
 function EMA:SettingsUpdateExperienceAll()
-	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do			
+	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do
 		EMA:UpdateExperienceStatus( characterName, nil, nil, nil, nil, nil, nil, nil, nil, nil) --, nil, nil, nil, nil, nil )
 	end
 end
@@ -2583,18 +2599,18 @@ function EMA:UpdateExperienceStatus( characterName, playerExperience, playerMaxE
 	if characterStatusBar == nil then
 		return
 	end
-	
-	local experienceBarText = characterStatusBar["experienceBarText"]	
-	local experienceBar = characterStatusBar["experienceBar"]	
-	
-	local experienceArtBarText = characterStatusBar["experienceArtBarText"]	
+
+	local experienceBarText = characterStatusBar["experienceBarText"]
+	local experienceBar = characterStatusBar["experienceBar"]
+
+	local experienceArtBarText = characterStatusBar["experienceArtBarText"]
 	if characterStatusBar["experienceArtBarText"] == nil then
 		return
 	end
 	local experienceArtBar = characterStatusBar["experienceArtBar"]
 	if characterStatusBar["experienceArtBar"] == nil then
 		return
-	end	
+	end
 	if playerExperience == nil then
 		playerExperience = experienceBarText.playerExperience
 	end
@@ -2603,28 +2619,28 @@ function EMA:UpdateExperienceStatus( characterName, playerExperience, playerMaxE
 	end
 	if exhaustionStateID == nil then
 		exhaustionStateID = experienceBarText.exhaustionStateID
-	end	
+	end
 	if playerLevel == nil then
 		playerLevel = experienceBarText.playerLevel
-	end	
-	if artifactName == nil then 
+	end
+	if artifactName == nil then
 		artifactName = experienceArtBarText.artifactName
 	end
-	
+
 	if artifactXP == nil then
 		artifactXP = experienceArtBarText.artifactXP
 	end
 	if artifactPointsSpent == nil then
 		artifactPointsSpent = experienceArtBarText.artifactPointsSpent
-	end	
+	end
 	if artifactForNextPoint == nil then
 		artifactForNextPoint = experienceArtBarText.artifactForNextPoint
 	end
-	
+
 	if artifactPointsAvailable == nil then
 		artifactPointsAvailable = experienceArtBarText.artifactPointsAvailable
-	end	
-	
+	end
+
 	experienceBarText.playerExperience = playerExperience
 	experienceBarText.playerMaxExperience = playerMaxExperience
 	experienceBarText.exhaustionStateID = exhaustionStateID
@@ -2633,12 +2649,12 @@ function EMA:UpdateExperienceStatus( characterName, playerExperience, playerMaxE
 	experienceArtBarText.artifactXP = artifactXP
 	experienceArtBarText.artifactPointsSpent = artifactPointsSpent
 	experienceArtBarText.artifactForNextPoint = artifactForNextPoint
-	experienceArtBarText.artifactPointsAvailable = artifactPointsAvailable	
+	experienceArtBarText.artifactPointsAvailable = artifactPointsAvailable
 	local min, max = math.min(0, playerExperience), playerMaxExperience
 
 	experienceBar:SetAnimatedValues(playerExperience, min, max , playerLevel)
 	experienceArtBar:SetAnimatedValues(artifactXP, 0, artifactForNextPoint, artifactPointsAvailable + artifactPointsSpent)
-	
+
 	local text = ""
 	if EMA.db.experienceStatusShowValues == true then
 		text = text..tostring( AbbreviateLargeNumbers(playerExperience) )..L[" / "]..tostring( AbbreviateLargeNumbers(playerMaxExperience) )..L[" "]
@@ -2660,8 +2676,8 @@ function EMA:UpdateExperienceStatus( characterName, playerExperience, playerMaxE
 	else
 		experienceBar:SetStatusBarColor( 0.58, 0.0, 0.55, 1.0 )
 		experienceBar.backgroundTexture:SetColorTexture( 0.58, 0.0, 0.55, 0.15 )
-	end	
-	
+	end
+
 --ArtText
 	local artText = ""
 	--EMA:Print("TextTest", artifactXP, artifactForNextPoint)
@@ -2676,13 +2692,13 @@ function EMA:UpdateExperienceStatus( characterName, playerExperience, playerMaxE
 		end
 	end
 	if artifactPointsAvailable > 0 then
-		artText = artText..L[" "].."[+ "..artifactPointsAvailable.."]"		
-	end	
+		artText = artText..L[" "].."[+ "..artifactPointsAvailable.."]"
+	end
 	--EMA:Print("arttest", artText)
-	experienceArtBarText:SetText( artText )		
+	experienceArtBarText:SetText( artText )
 	experienceArtBar:SetStatusBarColor( 0.901, 0.8, 0.601, 1.0 )
 	experienceArtBar.backgroundTexture:SetColorTexture( 0.901, 0.8, 0.601, 0.20 )
-end	
+end
 
 
 
@@ -2692,7 +2708,7 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:CHAT_MSG_COMBAT_FACTION_CHANGE( event, ... )
-	EMA:SendReputationStatusUpdateCommand()	
+	EMA:SendReputationStatusUpdateCommand()
 end
 
 function EMA:SetWatchedFactionIndex( index )
@@ -2715,7 +2731,7 @@ function EMA:ProcessUpdateReputationStatusMessage( characterName, reputationName
 end
 
 function EMA:SettingsUpdateReputationAll()
-	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do			
+	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do
 		EMA:UpdateReputationStatus( characterName, nil, nil, nil, nil, nil, nil )
 	end
 end
@@ -2732,8 +2748,8 @@ function EMA:UpdateReputationStatus( characterName, reputationName, reputationSt
 	if characterStatusBar == nil then
 		return
 	end
-	local reputationBarText = characterStatusBar["reputationBarText"]	
-	local reputationBar = characterStatusBar["reputationBar"]	
+	local reputationBarText = characterStatusBar["reputationBarText"]
+	local reputationBar = characterStatusBar["reputationBar"]
 	if reputationName == nil then
 		reputationName = reputationBarText.reputationName
 	end
@@ -2775,7 +2791,7 @@ function EMA:UpdateReputationStatus( characterName, reputationName, reputationSt
 	else
 		reputationBar:SetAlpha( 1 )
 	end
---]]	
+--]]
 	local text = ""
 	if EMA.db.experienceStatusShowValues == true then
 		text = text..tostring( AbbreviateLargeNumbers(reputationBarValue-reputationBarMin) )..L[" / "]..tostring( AbbreviateLargeNumbers(reputationBarMax-reputationBarMin) )..L[" "]
@@ -2820,23 +2836,23 @@ function EMA:SendHealthStatusUpdateCommand(unit)
 	--EMA:Print("debugHealthUpd", unit )
 	if unit == nil then
 		return
-	end	
+	end
 	if EMA.db.showTeamList == true and EMA.db.showHealthStatus == true then
 		if EMA.db.healthManaOutOfParty == true then
-			if unit == "player" then 
+			if unit == "player" then
 				--EMA:Print("itsme", unit)
 				local playerHealth = UnitHealth( unit )
 				local playerMaxHealth = UnitHealthMax( unit )
 				local inComingHeal = UnitGetIncomingHeals( unit )
 				local _, class = UnitClass ("player")
-				
+
 				if EMA.db.showTeamListOnMasterOnly == true then
 					--EMA:Print( "SendHealthStatusUpdateCommand TO Master!" )
 					EMA:EMASendCommandToMaster( EMA.COMMAND_HEALTH_STATUS_UPDATE, playerHealth, playerMaxHealth, inComingHeal, class )
 				else
 					--EMA:Print( "SendHealthStatusUpdateCommand TO Team!" )
 					EMA:EMASendCommandToTeam( EMA.COMMAND_HEALTH_STATUS_UPDATE, playerHealth, playerMaxHealth, inComingHeal, class )
-				end	
+				end
 			end
 		else
 			local playerHealth = UnitHealth( unit )
@@ -2856,13 +2872,13 @@ function EMA:ProcessUpdateHealthStatusMessage( characterName, playerHealth, play
 end
 
 function EMA:SettingsUpdateHealthAll()
-	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do			
+	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do
 		EMA:UpdateHealthStatus( characterName, nil, nil, nil, nil )
 	end
 end
 
 function EMA:UpdateHealthStatus( characterName, playerHealth, playerMaxHealth, inComingHeal, class )
-	--EMA:Print("testUpdate", characterName, playerHealth, playerMaxHealth, inComingHeal, class ) 
+	--EMA:Print("testUpdate", characterName, playerHealth, playerMaxHealth, inComingHeal, class )
 	if characterName == nil then
 		return
 	end
@@ -2877,11 +2893,11 @@ function EMA:UpdateHealthStatus( characterName, playerHealth, playerMaxHealth, i
 	if characterStatusBar == nil then
 		return
 	end
-	local healthBarText = characterStatusBar["healthBarText"]	
+	local healthBarText = characterStatusBar["healthBarText"]
 	local healthBar = characterStatusBar["healthBar"]
 	local healthIncomingBar = characterStatusBar["healthIncomingBar"]
-	
-	if playerMaxHealth == 0 then 
+
+	if playerMaxHealth == 0 then
 		playerMaxHealth = healthBarText.playerMaxHealth
 	end
 	if playerHealth == nil then
@@ -2889,10 +2905,10 @@ function EMA:UpdateHealthStatus( characterName, playerHealth, playerMaxHealth, i
 	end
 	if playerMaxHealth == nil then
 		playerMaxHealth = healthBarText.playerMaxHealth
-	end	
+	end
 	if inComingHeal == nil then
 		inComingHeal = healthBarText.inComingHeal
-	end		
+	end
 	healthBarText.playerHealth = playerHealth
 	healthBarText.playerMaxHealth = playerMaxHealth
 	healthBarText.inComingHeal = inComingHeal
@@ -2900,8 +2916,8 @@ function EMA:UpdateHealthStatus( characterName, playerHealth, playerMaxHealth, i
 	healthBar:SetMinMaxValues( 0, tonumber( playerMaxHealth ) )
 	healthBar:SetValue( tonumber( playerHealth ) )
 	healthIncomingBar:SetMinMaxValues( 0, tonumber( playerMaxHealth ) )
-	healthIncomingBar:SetValue( tonumber( playerHealth ) )	
-	
+	healthIncomingBar:SetValue( tonumber( playerHealth ) )
+
 	if inComingHeal > 0 then
 --	EMA:Print("incomingHeal", inComingHeal)
 		healthIncomingBar:SetValue( tonumber( playerHealth + inComingHeal ) )
@@ -2928,7 +2944,7 @@ function EMA:UpdateHealthStatus( characterName, playerHealth, playerMaxHealth, i
 		end
 	end
 	--EMA:Print("test2", text)
-	healthBarText:SetText(text)		
+	healthBarText:SetText(text)
 	EMA:SetStatusBarColourForHealth( healthBar, floor((playerHealth/playerMaxHealth)*100), characterName, class)
 end
 
@@ -2955,7 +2971,7 @@ function EMA:SetStatusBarColourForHealth( statusBar, statusValue, characterName,
 		b = b
 		statusBar:SetStatusBarColor( r, g, b )
 	end
-end	
+end
 
 -------------------------------------------------------------------------------------------------------------
 -- Power Status Bar Updates.
@@ -2972,7 +2988,7 @@ end
 function EMA:SendPowerStatusUpdateCommand( unit )
 	if EMA.db.showTeamList == true and EMA.db.showPowerStatus == true then
 		if EMA.db.healthManaOutOfParty == true then
-			if unit == "player" then 
+			if unit == "player" then
 				--EMA:Print("itsme", unit)
 				local playerPower = UnitPower( unit )
 				local playerMaxPower = UnitPowerMax( unit )
@@ -2983,7 +2999,7 @@ function EMA:SendPowerStatusUpdateCommand( unit )
 				else
 					--EMA:Print( "SendHealthStatusUpdateCommand TO Team!", playerPower, playerMaxPower, powerToken )
 					EMA:EMASendCommandToTeam( EMA.COMMAND_POWER_STATUS_UPDATE, playerPower, playerMaxPower, powerToken )
-				end	
+				end
 			end
 		else
 			local playerPower = UnitPower( unit )
@@ -2999,10 +3015,10 @@ end
 
 function EMA:ProcessUpdatePowerStatusMessage( characterName, playerPower, playerMaxPower, powerToken )
 	EMA:UpdatePowerStatus( characterName, playerPower, playerMaxPower, powerToken )
-end		
-																					  
+end
+
 function EMA:SettingsUpdatePowerAll()
-	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do			
+	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do
 		EMA:UpdatePowerStatus( characterName, nil, nil, nil )
 	end
 end
@@ -3017,20 +3033,20 @@ function EMA:UpdatePowerStatus( characterName, playerPower, playerMaxPower, powe
 	end
 	if EMA.db.showPowerStatus == false then
 		return
-	end	
+	end
 	local originalChatacterName = characterName
 	characterName = EMAUtilities:AddRealmToNameIfMissing( characterName )
 	local characterStatusBar = EMA.characterStatusBar[characterName]
 	if characterStatusBar == nil then
 		return
 	end
-	local powerBarText = characterStatusBar["powerBarText"]	
-	local powerBar = characterStatusBar["powerBar"]	
-	
+	local powerBarText = characterStatusBar["powerBarText"]
+	local powerBar = characterStatusBar["powerBar"]
+
 	if playerMaxPower == 0 then
 		playerMaxPower = powerBarText.playerMaxPower
 	end
-	
+
 	if playerPower == nil then
 		playerPower = powerBarText.playerPower
 	end
@@ -3052,7 +3068,7 @@ function EMA:UpdatePowerStatus( characterName, playerPower, playerMaxPower, powe
 			text = tostring( floor( (playerPower/playerMaxPower)*100) )..L["%"]
 		end
 	end
-	powerBarText:SetText( text )		
+	powerBarText:SetText( text )
 	EMA:SetStatusBarColourForPower( powerBar, powerToken )--originalChatacterName )
 end
 
@@ -3062,17 +3078,17 @@ function EMA:SetStatusBarColourForPower( statusBar, powerToken )
 	--	EMA:Print("powertest", powerToken, info.r, info.g, info.b )
 		statusBar:SetStatusBarColor( info.r, info.g, info.b, 1 )
 		statusBar.backgroundTexture:SetColorTexture( info.r, info.g, info.b, 0.25 )
-	
+
 	end
-end		
+end
 
 -------------------------------------------------------------------------------------------------------------
 -- Combo Points Status Bar Updates.
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:UNIT_POWER_FREQUENT( event, Unit, powerType, ... )
-	--TODO there got to be a better way to clean this code up Checking to see if its the event we need and then send the command to the update if it is.	
-	--EMA:Print("EventTest", Unit, powerType) 
+	--TODO there got to be a better way to clean this code up Checking to see if its the event we need and then send the command to the update if it is.
+	--EMA:Print("EventTest", Unit, powerType)
 	if Unit == "player" then
 		--EMA:Print("player", Unit, powerType)
 		if( event and powerType == "COMBO_POINTS" ) then
@@ -3082,13 +3098,13 @@ function EMA:UNIT_POWER_FREQUENT( event, Unit, powerType, ... )
 		elseif( event and powerType == "HOLY_POWER" ) then
 			EMA:SendComboStatusUpdateCommand()
 		elseif( event and powerType == "ARCANE_CHARGES" ) then
-			EMA:SendComboStatusUpdateCommand()	
+			EMA:SendComboStatusUpdateCommand()
 		elseif( event and powerType == "CHI" ) then
 			EMA:SendComboStatusUpdateCommand()
 		else
 			return
 		end
-	end	
+	end
 end
 
 function EMA:RUNE_POWER_UPDATE( event, ...)
@@ -3124,20 +3140,20 @@ function EMA:SendComboStatusUpdateCommand()
 			PowerType = 12
 		else
 			return
-		end		
-		
+		end
+
 		local playerCombo = UnitPower ( "player", PowerType)
 		local playerMaxCombo = UnitPowerMax( "player", PowerType)
-		
+
 		--Deathkight Dity Hacky Hacky.
 		if Class == "DEATHKNIGHT" then
 			for i=1, playerMaxCombo do
 				local start, duration, runeReady = GetRuneCooldown(i)
 					if not runeReady then
 						playerCombo = playerCombo - 1
-					end	
+					end
 			end
-		end	
+		end
 		--EMA:Print ("PowerType", PowerType, playerCombo, playerMaxCombo, class)
 		if EMA.db.showTeamListOnMasterOnly == true then
 			EMA:DebugMessage( "SendComboStatusUpdateCommand TO Master!" )
@@ -3146,7 +3162,7 @@ function EMA:SendComboStatusUpdateCommand()
 			EMA:DebugMessage( "SendComboStatusUpdateCommand TO TEAM!" )
 			EMA:EMASendCommandToTeam( EMA.COMMAND_COMBO_STATUS_UPDATE, playerCombo, playerMaxCombo, class )
 		end
-	end	
+	end
 end
 
 function EMA:ProcessUpdateComboStatusMessage( characterName, playerCombo, playerMaxCombo, class )
@@ -3154,7 +3170,7 @@ function EMA:ProcessUpdateComboStatusMessage( characterName, playerCombo, player
 end
 
 function EMA:SettingsUpdateComboAll()
-	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do			
+	for characterName, characterStatusBar in pairs( EMA.characterStatusBar ) do
 		EMA:UpdateComboStatus( characterName, nil, nil, nil )
 	end
 end
@@ -3163,19 +3179,19 @@ function EMA:UpdateComboStatus( characterName, playerCombo, playerMaxCombo, clas
 	if CanDisplayTeamList() == false then
 		return
 	end
-	
+
 	if EMA.db.showComboStatus == false then
 		return
 	end
-	
+
 	local characterStatusBar = EMA.characterStatusBar[characterName]
 	if characterStatusBar == nil then
 		return
 	end
-	
-	local comboBarText = characterStatusBar["comboBarText"]	
-	local comboBar = characterStatusBar["comboBar"]	
-	
+
+	local comboBarText = characterStatusBar["comboBarText"]
+	local comboBar = characterStatusBar["comboBar"]
+
 	if playerCombo == nil then
 		playerCombo = comboBarText.playerCombo
 	end
@@ -3185,17 +3201,17 @@ function EMA:UpdateComboStatus( characterName, playerCombo, playerMaxCombo, clas
 	if playerMaxCombo == nil then
 		playerMaxCombo = comboBarText.playerMaxCombo
 	end
-	
+
 	comboBarText.playerCombo = playerCombo
 	comboBarText.playerMaxCombo = playerMaxCombo
 	comboBar:SetMinMaxValues( 0, tonumber( playerMaxCombo ) )
-	comboBar:SetValue( tonumber( playerCombo ) )	
+	comboBar:SetValue( tonumber( playerCombo ) )
 	local text = ""
-	
+
 	if EMA.db.comboStatusShowValues == true then
 		text = text..tostring( AbbreviateLargeNumbers(playerCombo) )..L[" / "]..tostring( AbbreviateLargeNumbers(playerMaxCombo) )..L[" "]
 	end
-	
+
 	if EMA.db.ComboStatusShowPercentage == true then
 		if EMA.db.comboStatusShowValues == true then
 			text = text..tostring( AbbreviateLargeNumbers(playerCombo) )..L[" "]..L["("]..tostring( floor( (playerCombo/playerMaxCombo)*100) )..L["%"]..L[")"]
@@ -3204,18 +3220,18 @@ function EMA:UpdateComboStatus( characterName, playerCombo, playerMaxCombo, clas
 		end
 	end
 	comboBarText:SetText( text )
-	EMA:SetStatusBarColourForCombo( comboBar, class )	
+	EMA:SetStatusBarColourForCombo( comboBar, class )
 end
 
 function EMA:SetStatusBarColourForCombo( comboBar, Class )
 	if Class == "WARLOCK" then
 		-- Purple
 		comboBar:SetStatusBarColor( 0.58, 0.51, 0.79, 1 )
-		comboBar.backgroundTexture:SetColorTexture( 0.58, 0.51, 0.79, 0.25) 	
+		comboBar.backgroundTexture:SetColorTexture( 0.58, 0.51, 0.79, 0.25)
 	elseif  Class == "PALADIN" then
 		--yellow(gold)
 		comboBar:SetStatusBarColor( 0.96, 0.55, 0.73, 1 )
-		comboBar.backgroundTexture:SetColorTexture( 0.96, 0.55, 0.73, 0.25) 	
+		comboBar.backgroundTexture:SetColorTexture( 0.96, 0.55, 0.73, 0.25)
 	elseif Class =="DEATHKNIGHT" then
 		--Sky Blue?
 		comboBar:SetStatusBarColor( 0.60, 0.80, 1.0, 1 )
@@ -3230,24 +3246,24 @@ function EMA:SetStatusBarColourForCombo( comboBar, Class )
 		comboBar.backgroundTexture:SetColorTexture( 0.44, 0.79, 0.67, 0.25)
 	else
 		return
-	end	
-end	
-		
-		
-		
+	end
+end
+
+
+
 -------------------------------------------------------------------------------------------------------------
 -- Last Spell Bar Updates.
 -------------------------------------------------------------------------------------------------------------
-		
+
 function EMA:UNIT_SPELLCAST_START( event, unitTarget , castGUID, spellID )
 	EMA:UpdateSpellStatus( unitTarget, spellID )
-end		
+end
 
-function EMA:UNIT_SPELLCAST_SUCCEEDED( event, unitTarget , castGUID, spellID ) 
+function EMA:UNIT_SPELLCAST_SUCCEEDED( event, unitTarget , castGUID, spellID )
 	EMA:UpdateSpellStatus( unitTarget , spellID )
 end
 
-function EMA:UNIT_SPELLCAST_STOP( event, unitTarget , castGUID, spellID ) 
+function EMA:UNIT_SPELLCAST_STOP( event, unitTarget , castGUID, spellID )
 	EMA:UpdateSpellStatus( unitTarget , spellID )
 end
 
@@ -3265,7 +3281,7 @@ function EMA:UpdateSpellStatus( unitTarget, spellID )
 	if characterStatusBar == nil then
 		return
 	end
-	local GCDFrame = characterStatusBar["GCDFrame"]	
+	local GCDFrame = characterStatusBar["GCDFrame"]
 	local GCDFrameText = characterStatusBar["GCDFrameText"]
 	--EMA:Print("testUpdate", unitTarget )
 	if IsAddOnLoaded( "TrufiGCD" ) == true then
@@ -3274,11 +3290,11 @@ function EMA:UpdateSpellStatus( unitTarget, spellID )
 		if i > 0 and i <= 5 then
 			-- setpoint
 			TrGCDQueueFr[i]:ClearAllPoints()
-			TrGCDQueueFr[i]:SetPoint( "LEFT", GCDFrame, "LEFT", 0 , 0 )			
+			TrGCDQueueFr[i]:SetPoint( "LEFT", GCDFrame, "LEFT", 0 , 0 )
 		end
 	else
 		GCDFrameText:SetText( L["CAN_NOT_FIND_TRUFIGCD_ADDON"] )
-	end		
+	end
 end
 
 function EMA:SetTrGCOpt()
@@ -3290,12 +3306,12 @@ function EMA:SetTrGCOpt()
 		for i=1,5 do
 		-- enable
 			TrGCDQueueOpt[i].enable = true
-			if TrufiGCDGlSave ~= nil then	
+			if TrufiGCDGlSave ~= nil then
 				TrufiGCDGlSave["TrGCDQueueFr"][i]["enable"] = true
 			end
 			-- fade
 			TrGCDQueueOpt[i].fade = "Right"
-			if TrufiGCDGlSave ~= nil then	
+			if TrufiGCDGlSave ~= nil then
 				TrufiGCDGlSave["TrGCDQueueFr"][i]["fade"] = "Right"
 			end
 			-- spells ( width )
@@ -3303,20 +3319,20 @@ function EMA:SetTrGCOpt()
 			TrGCDSpWidthChanged( i, EMA.db.gCDFrameWidth )
 			if TrufiGCDGlSave ~= nil then
 				TrufiGCDGlSave["TrGCDQueueFr"][i]["width"] = EMA.db.gCDFrameWidth
-			end	
+			end
 			-- Icon Size!
-			--EMA:Print("sizetest", TrGCDQueueOpt[i].size, EMA.db.comboStatusHeight ) 
+			--EMA:Print("sizetest", TrGCDQueueOpt[i].size, EMA.db.comboStatusHeight )
 			TrGCDQueueOpt[i].size = EMA.db.gCDFrameHeight
 			TrGCDQueueOpt[i].speed = TrGCDQueueOpt[i].size / TimeGcd
 			TrGCDResizeQFr(i)
 			if TrufiGCDGlSave ~= nil then
 				TrufiGCDGlSave["TrGCDQueueFr"][i]["size"] = EMA.db.gCDFrameHeight
 				TrufiGCDGlSave["TrGCDQueueFr"][i]["speed"] = TrGCDQueueOpt[i].speed
-			end	
+			end
 			TrGCDLoadSettings()
 		end
 	end
-end	
+end
 -------------------------------------------------------------------------------------------------------------
 -- Addon initialization, enabling and disabling.
 -------------------------------------------------------------------------------------------------------------
@@ -3333,7 +3349,7 @@ function EMA:OnInitialize()
 	EMA:SettingsRefresh()
 	-- Create the team list frame.
 	CreateEMATeamListFrame()
-	EMA:SetTeamListVisibility()	
+	EMA:SetTeamListVisibility()
 	-- Is Following to stop spam
 	EMA.isFollowing = false
 	EMA:SetTrGCOpt()
@@ -3347,7 +3363,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "AUTOFOLLOW_END" )
 	EMA:RegisterEvent( "PLAYER_XP_UPDATE" )
 	EMA:RegisterEvent( "UPDATE_EXHAUSTION" )
-	EMA:RegisterEvent( "PLAYER_LEVEL_UP" )		
+	EMA:RegisterEvent( "PLAYER_LEVEL_UP" )
 	EMA:RegisterEvent( "UNIT_HEALTH" )
 	EMA:RegisterEvent( "UNIT_MAXHEALTH" )
 	EMA:RegisterEvent( "UNIT_HEAL_PREDICTION" )
@@ -3366,9 +3382,9 @@ function EMA:OnEnable()
 	EMA:RegisterEvent("UNIT_SPELLCAST_STOP")
 	EMA:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
 	EMA.SharedMedia.RegisterCallback( EMA, "LibSharedMedia_Registered" )
-    EMA.SharedMedia.RegisterCallback( EMA, "LibSharedMedia_SetGlobal" )	
+    EMA.SharedMedia.RegisterCallback( EMA, "LibSharedMedia_SetGlobal" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_TEAM_CHARACTER_ADDED, "OnCharactersChanged" )
-	EMA:RegisterMessage( EMAApi.MESSAGE_TEAM_CHARACTER_REMOVED, "OnCharactersChanged" )	
+	EMA:RegisterMessage( EMAApi.MESSAGE_TEAM_CHARACTER_REMOVED, "OnCharactersChanged" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_TEAM_ORDER_CHANGED, "OnCharactersChanged" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_TEAM_MASTER_CHANGED, "OnMasterChanged" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_CHARACTER_ONLINE, "OnCharactersChanged")
@@ -3411,11 +3427,11 @@ function EMA:GROUP_ROSTER_UPDATE()
 	end
 end
 
-function EMA:UNIT_PORTRAIT_UPDATE(event, ...) 
+function EMA:UNIT_PORTRAIT_UPDATE(event, ...)
 	if EMA.db.showCharacterPortrait == true then
 		EMA:RefreshTeamListControls()
 	end
-end	
+end
 
 function EMA:PLAYER_REGEN_ENABLED( event, ... )
 	if EMA.db.hideTeamListInCombat == true then
